@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Shit Head</string>
+    <string name="menu_settings">Settings</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="email">Email</string>
+    <string name="register_user">Register a new user:</string>
+    <string name="user_created">User created!</string>
+    <string name="activated">User activated! You may now log in!</string>
+    <string name="auto_login">Auto login</string>
+    <string name="info">Player info</string>
+
+    <!-- MENU -->
+    <string name="quick_game">Start game</string>
+    <string name="custom_game">Custom game</string>
+    <string name="how_to_play">How to play</string>
+    <string name="friends">Friends</string>
+    <string name="logout">Logout</string>
+    <string name="active_games">Active games:</string>
+    <string name="choose_opponents">Choose opponents</string>
+    <string name="random">Random</string>
+    <string name="started">Started:</string>
+    <string name="last_move">Last move:</string>
+    <string name="current_player">Current Player:</string>
+    <string name="in_game_queue">You are now queued for a game. You will be notified when it is ready for you.</string>
+
+    <!-- RULES -->
+    <string name="dealing">Dealing the cards</string>
+    <string name="dealing_text">From a standard, shuffled deck of 52 cards, each player is dealt three \'face down cards\' in a row. Players are not allowed to see or change these cards. On top of the \'face down cards\', they are dealt the same number of \'face up cards\'. Three cards are again dealt to each player (face down), and this becomes the player\'s \'hand\'. Players are then allowed to switch the cards in their \'hand\' with their \'face up cards\' in an attempt to produce a strong set of \'face up cards\' for later in the game. The dealer places the remaining cards face-down in the \'deck\'. Players will lay their cards in turn in the \'pick up pile\' or \'pile\'.</string>
+    <string name="starting_play">Starting play</string>
+    <string name="starting_play_text">After the cards have been dealt, players lay cards in turn onto the pick up pile, starting with the first player to lay a three. If nobody has a three, then the holder of a four must lay and so-on. If two players hold a three, one with the \'best\' color starts (rank: hearts, diamonds, clubs, spades). Play will then continue in a clockwise direction until the cards dictate otherwise. Other variations start with the person left of the dealer.</string>
+    <string name="order_of_play">Order of play</string>
+    <string name="order_of_play_text">Each player must lay a card (or two or more cards of the same number) equal to or higher in value than the one at the top of the pick up pile, then draw cards from the deck so they have at least 3 cards in their hand (unless the deck has run out of cards or they already have 3 or more cards in their hand). If they cannot play a card the player may take an extra card from the deck  and hope that it is playable, if this fail they must pick up the pick-up pile (put it in their hand) and end their turn. Play continues sequentially in a clockwise direction unless certain wildcards are played, depending on rule set.</string>
+    <string name="final_phase">A game of shithead in its final phase</string>
+    <string name="final_phase_text">When a player has no more cards in his or her hand, and the deck is empty, he or she may proceed to play from their three face up cards onto the pick up pile. If the deck is empty and there are no cards in the player\'s hand, he or she may lay one or more (if they share the same rank) of the face up cards on the pile. The rank of the face up card must be higher than the rank of the card on the top of the pile, otherwise the player cannot play the face up card and must pick up the pile.Picking up the pile can often put a player at a great disadvantage when many cards have been played as they will have more cards to lose than other players. Even so, it is still possible to quickly recover from this handicap. Once all of the face up cards have been played, a player must then play their face down cards, which are known as "blind cards". These must be turned over so that all the group may see what has been played. If a player is able to complete a set in turn (e.g. complete four-of-a-kind 8\u2660 8\u2666 8\u2665 8\u2663) he or she can do so clearing (burning) and removing the entire pile from play. For example if a player first plays 7\u2660 7\u2666 7\u2665 and the next player in turn has the 7\u2663 he or she can drop that card to complete the set thus clearing the pile. The player who clears may play another card after. Some alternate rule sets allow players to clear at any time in or out of turn. If a player has no cards left to play, they are out. The loser, known as "The Shithead" is the last player left in the game. Under most rules the shithead\'s only role is to deal the next set of cards. Players may adapt this so that the shithead is also required to fulfil a forfeit.</string>
+    <string name="wildcards">Wildcards </string>
+    <string name="wildcards_text">2 - Playing this wildcard allows the next player to play any card in his or her hand.\n10 - Laying a 10 burns the pile and removes it from the game. The player who laid the 10 may then lay another card before play continues.</string>
+
+    <!-- GAME -->
+    <string name="card">A Card</string>
+    <string name="play">Play card(s)</string>
+    <string name="chance">Chance card</string>
+    <string name="pile">Take pile</string>
+    <string name="done">Done</string>
+    <string name="switch_card">Switch cards</string>
+    <string name="not_pile">You can not take the pile!</string>
+    <string name="not_chance">You can not take a chance card!</string>
+    <string name="new_move">You have a new move to make!</string>
+    
+    <!-- ERRORS -->
+    <string name="connection_error">Connection error, make sure that you have a internet connection and try again.</string>
+    <string name="terrible_error">Ow gosh.. this is embarrassing.. implementation error!</string>
+    <string name="password_to_short">Entered password is to short!</string>
+    <string name="passwords_not_equal">Entered passwords does not match!</string>
+    <string name="username_or_email_error">Username or email already exists!</string>
+    <string name="all_fields_mandatory">All the input fields are mandatory!</string>
+    <string name="invalid_activation_key">Invalid activation key, please contact support!</string>
+    <string name="invalid_credentials">Invalid username or password!</string>
+    <string name="invalid_session">Invalid request information, please relogin to the application!</string>
+    <string name="invalid_game">Error getting game state, please try again!</string>
+    <string name="invalid_move">Invalid move!</string>
+    <string name="invalid_chance">You have already taken a chance card!</string>
+    <string name="invalid_version">You are using an old version, please update!</string>
+    <string name="not_activated">User not activated, please try again in a few minutes!</string>
+    <string name="error_switching">Error executing switching command, please try again!</string>
+    <string name="not_your_turn">It is not your turn! Please wait for the other players!</string>
+
+</resources>

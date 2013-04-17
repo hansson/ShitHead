@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ContentDescription">
+        <ignore path="res\layout\game.xml" />
+    </issue>
+    <issue id="DefaultLocale">
+        <ignore path="src\org\thgaming\shithead\activities\GCMActivity.java" />
+    </issue>
+    <issue id="SelectableText" severity="ignore" />
+</lint>
