@@ -43,6 +43,10 @@ public class RegisterActivity extends Activity {
 			Toast.makeText(mContext, R.string.password_to_short, Toast.LENGTH_LONG).show();
 		} else if (email.getText().equals("") || username.getText().equals("")) {
 			Toast.makeText(mContext, R.string.all_fields_mandatory, Toast.LENGTH_LONG).show();
+		} else if (username.getText().length() > 20) {
+			Toast.makeText(mContext, R.string.username_to_long, Toast.LENGTH_LONG).show();
+		} else if (password.getText().length() > 20) {
+			Toast.makeText(mContext, R.string.password_to_long, Toast.LENGTH_LONG).show();
 		} else {
 			findViewById(R.id.progress).setVisibility(View.VISIBLE);
 			new RegisterTask().execute(username.getText().toString(), email.getText().toString(), password.getText().toString());

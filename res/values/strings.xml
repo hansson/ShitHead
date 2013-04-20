@@ -56,6 +56,8 @@
     <string name="connection_error">Connection error, make sure that you have a internet connection and try again.</string>
     <string name="terrible_error">Ow gosh.. this is embarrassing.. implementation error!</string>
     <string name="password_to_short">Entered password is to short!</string>
+    <string name="password_to_long">Password is to long!</string>
+    <string name="username_to_long">Username is to long!</string>
     <string name="passwords_not_equal">Entered passwords does not match!</string>
     <string name="username_or_email_error">Username or email already exists!</string>
     <string name="all_fields_mandatory">All the input fields are mandatory!</string>
