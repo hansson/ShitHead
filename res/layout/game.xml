@@ -112,6 +112,7 @@
     <!-- ################################ -->
 
     <LinearLayout
+        android:id="@+id/op_right_container_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -140,6 +141,7 @@
     <!-- ################################ -->
 
     <LinearLayout
+        android:id="@+id/op_left_container_holder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"

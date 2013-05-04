@@ -15,7 +15,7 @@ public class Constants {
 	public static final String PREF_PASSWORD = "password";
 	public static final String PREF_AUTO_LOGIN = "auto_login";
 	// Misc
-	public static final String URL = "http://tobiashansson.nu:9090/";
+	public static final String URL = HiddenConstants.URL;
 	public static final String CONNECTION_ERROR = "Connection error";
 	public static final String LOG_TAG = "SHH_TAG";
 	public static final int REGISTER_ACTIVITY_CODE = 0x1111;

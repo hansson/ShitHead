@@ -6,25 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.hansson.sh_shared.entitys.Card;
-import com.hansson.sh_shared.entitys.Opponent;
-import com.hansson.sh_shared.gcm.GCMBaseMessage;
-import com.hansson.sh_shared.gcm.GCMPlayerMove;
-import com.hansson.sh_shared.gcm.GCMPlayerMoveFaceDown;
-import com.hansson.sh_shared.gcm.GCMSwitchingDone;
-import com.hansson.sh_shared.gcm.GCMTypes;
-import com.hansson.sh_shared.rr.BasicResponse;
-import com.hansson.sh_shared.rr.FaceDownRequest;
-import com.hansson.sh_shared.rr.GameStateRequest;
-import com.hansson.sh_shared.rr.GameStateResponse;
-import com.hansson.sh_shared.rr.MoveRequest;
-import com.hansson.sh_shared.rr.MoveRequest.MoveType;
-import com.hansson.sh_shared.rr.MoveResponse;
-import com.hansson.sh_shared.rr.MoveResponse.Event;
-import com.hansson.sh_shared.rr.ResponseStatus;
-import com.hansson.sh_shared.rr.SwitchingDoneRequest;
-import com.hansson.shithead.R;
-
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -46,6 +27,24 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hansson.sh_shared.entitys.Card;
+import com.hansson.sh_shared.entitys.Opponent;
+import com.hansson.sh_shared.gcm.GCMBaseMessage;
+import com.hansson.sh_shared.gcm.GCMPlayerMove;
+import com.hansson.sh_shared.gcm.GCMPlayerMoveFaceDown;
+import com.hansson.sh_shared.gcm.GCMSwitchingDone;
+import com.hansson.sh_shared.gcm.GCMTypes;
+import com.hansson.sh_shared.rr.BasicResponse;
+import com.hansson.sh_shared.rr.FaceDownRequest;
+import com.hansson.sh_shared.rr.GameStateRequest;
+import com.hansson.sh_shared.rr.GameStateResponse;
+import com.hansson.sh_shared.rr.MoveRequest;
+import com.hansson.sh_shared.rr.MoveRequest.MoveType;
+import com.hansson.sh_shared.rr.MoveResponse;
+import com.hansson.sh_shared.rr.MoveResponse.Event;
+import com.hansson.sh_shared.rr.ResponseStatus;
+import com.hansson.sh_shared.rr.SwitchingDoneRequest;
+import com.hansson.shithead.R;
 import com.hansson.shithead.SelectedCard;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
@@ -118,7 +117,6 @@ public class GameActivity extends GCMActivity {
 			Map<String, Integer> cardMap = getCardMap(j);
 			int[] handPadding = getHandPadding(j);
 			int[] cardPadding = getCardPadding(j);
-			int[] nameImageValues = getNameImageValues(j);
 			int backCardId = getBackCardId(j);
 			// Processing
 			// Get current opponent
@@ -149,10 +147,12 @@ public class GameActivity extends GCMActivity {
 				opponentContainer.addView(opponentFaceUpCard);
 			}
 			// Draw opponent name
+			int size = 40; // TODO calculate size
+			int[] nameImageValues = getNameImageValues(j, opponents.get(j).getUsername().length(), size);
 			ImageView opponentName = (ImageView) findViewById(getNameId(j));
 			Bitmap bitmap = Bitmap.createBitmap(nameImageValues[0], nameImageValues[1], Bitmap.Config.ARGB_8888);
 			Paint paint = new Paint();
-			paint.setTextSize(40);
+			paint.setTextSize(size);
 			Canvas canvas = new Canvas(bitmap);
 			canvas.rotate(nameImageValues[2]);
 			canvas.drawText(opponent.getUsername(), nameImageValues[3], nameImageValues[4], paint);
@@ -227,7 +227,7 @@ public class GameActivity extends GCMActivity {
 			mTurnChip.setPadding(15, 0, 0, 15);
 			mTurnChip.setVisibility(View.VISIBLE);
 		} else if (mGame.getCurrentPlayer().equals(opponents.get(0).getUsername())) {
-			p.addRule(RelativeLayout.BELOW, R.id.op_left_container);
+			p.addRule(RelativeLayout.BELOW, R.id.op_left_container_holder);
 			mTurnChip.setLayoutParams(p);
 			mTurnChip.setPadding(10, 10, 0, 0);
 			mTurnChip.setVisibility(View.VISIBLE);
@@ -237,7 +237,7 @@ public class GameActivity extends GCMActivity {
 			mTurnChip.setPadding(10, 10, 0, 0);
 			mTurnChip.setVisibility(View.VISIBLE);
 		} else if (mGame.getCurrentPlayer().equals(opponents.get(2).getUsername())) {
-			p.addRule(RelativeLayout.BELOW, R.id.op_right_container);
+			p.addRule(RelativeLayout.BELOW, R.id.op_right_container_holder);
 			p.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			mTurnChip.setLayoutParams(p);
 			mTurnChip.setPadding(0, 10, 10, 0);
@@ -306,26 +306,26 @@ public class GameActivity extends GCMActivity {
 		}
 	}
 
-	private int[] getNameImageValues(int j) {
+	private int[] getNameImageValues(int playerIndex, int usernameLength, int textSize) {
 		// width, height, rotate, x, y
-		switch (j) {
+		switch (playerIndex) {
 			case 0:
-				int[] leftPadding = { 30, 100, -90, -100, 30 };
-				return leftPadding;
+				int[] leftNameValues = { 30, (int) ((textSize / 2) * usernameLength), -90, -(int) ((textSize / 2) * usernameLength), 30 };
+				return leftNameValues;
 			case 1:
-				int[] topPadding = { 100, 30, 0, 0, 30 };
-				return topPadding;
+				int[] topNameValues = { (int) ((textSize / 2) * usernameLength), 30, 0, 0, 30 };
+				return topNameValues;
 			case 2:
-				int[] rightPadding = { 30, 100, 90, 0, 0 };
-				return rightPadding;
+				int[] rightNameValues = { 30, (int) ((textSize / 2) * usernameLength), 90, 0, 0 };
+				return rightNameValues;
 			default:
-				int[] defaultPadding = { 0, 0, 0, 0, 0 };
-				return defaultPadding;
+				int[] defaultNameValues = { 0, 0, 0, 0, 0 };
+				return defaultNameValues;
 		}
 	}
 
-	private int[] getCardPadding(int j) {
-		switch (j) {
+	private int[] getCardPadding(int playerIndex) {
+		switch (playerIndex) {
 			case 0:
 				int[] leftPadding = { 0, 0, 0, 1 };
 				return leftPadding;
@@ -341,8 +341,8 @@ public class GameActivity extends GCMActivity {
 		}
 	}
 
-	private int[] getHandPadding(int j) {
-		switch (j) {
+	private int[] getHandPadding(int playerIndex) {
+		switch (playerIndex) {
 			case 0:
 				int[] leftPadding = { 0, 0, 0, 10 };
 				return leftPadding;
@@ -358,8 +358,8 @@ public class GameActivity extends GCMActivity {
 		}
 	}
 
-	private int getNameId(int j) {
-		switch (j) {
+	private int getNameId(int playerIndex) {
+		switch (playerIndex) {
 			case 0:
 				return R.id.op_left_name;
 			case 1:
@@ -371,8 +371,8 @@ public class GameActivity extends GCMActivity {
 		}
 	}
 
-	private Map<String, Integer> getCardMap(int j) {
-		switch (j) {
+	private Map<String, Integer> getCardMap(int playerIndex) {
+		switch (playerIndex) {
 			case 0:
 				return Constants.HORIZONTAL_OPPONENT_CARD_MAP;
 			case 1:
@@ -384,8 +384,8 @@ public class GameActivity extends GCMActivity {
 		}
 	}
 
-	private int getBackCardId(int j) {
-		switch (j) {
+	private int getBackCardId(int playerIndex) {
+		switch (playerIndex) {
 			case 0:
 				return R.drawable.hor_op_back_card;
 			case 1:
@@ -397,8 +397,8 @@ public class GameActivity extends GCMActivity {
 		}
 	}
 
-	private int getContainerId(int j) {
-		switch (j) {
+	private int getContainerId(int playerIndex) {
+		switch (playerIndex) {
 			case 0:
 				return R.id.op_left_container;
 			case 1:
