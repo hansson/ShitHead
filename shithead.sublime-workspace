@@ -1,0 +1,265 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"contents": "package com.hansson.shithead.activities;\n\nimport java.util.Collections;\nimport java.util.HashMap;\nimport java.util.LinkedList;\nimport java.util.List;\nimport java.util.Map;\n\nimport com.hansson.sh_shared.entitys.Card;\nimport com.hansson.sh_shared.entitys.Opponent;\nimport com.hansson.sh_shared.gcm.GCMBaseMessage;\nimport com.hansson.sh_shared.gcm.GCMPlayerMove;\nimport com.hansson.sh_shared.gcm.GCMPlayerMoveFaceDown;\nimport com.hansson.sh_shared.gcm.GCMSwitchingDone;\nimport com.hansson.sh_shared.gcm.GCMTypes;\nimport com.hansson.sh_shared.rr.BasicResponse;\nimport com.hansson.sh_shared.rr.FaceDownRequest;\nimport com.hansson.sh_shared.rr.GameStateRequest;\nimport com.hansson.sh_shared.rr.GameStateResponse;\nimport com.hansson.sh_shared.rr.MoveRequest;\nimport com.hansson.sh_shared.rr.MoveRequest.MoveType;\nimport com.hansson.sh_shared.rr.MoveResponse;\nimport com.hansson.sh_shared.rr.MoveResponse.Event;\nimport com.hansson.sh_shared.rr.ResponseStatus;\nimport com.hansson.sh_shared.rr.SwitchingDoneRequest;\nimport com.hansson.shithead.R;\n\nimport android.content.SharedPreferences;\nimport android.graphics.Bitmap;\nimport android.graphics.Canvas;\nimport android.graphics.Color;\nimport android.graphics.Paint;\nimport android.graphics.PorterDuff;\nimport android.os.AsyncTask;\nimport android.os.Bundle;\nimport android.view.View;\nimport android.view.View.OnClickListener;\nimport android.view.ViewGroup;\nimport android.widget.Button;\nimport android.widget.HorizontalScrollView;\nimport android.widget.ImageView;\nimport android.widget.LinearLayout;\nimport android.widget.RelativeLayout;\nimport android.widget.TextView;\nimport android.widget.Toast;\n\nimport com.google.gson.Gson;\nimport com.google.gson.GsonBuilder;\nimport com.hansson.shithead.SelectedCard;\nimport com.hansson.shithead.util.Constants;\nimport com.hansson.shithead.util.GsonOperator;\n\npublic class GameActivity extends GCMActivity {\n\n	private GameStateResponse mGame;\n	private SelectedCard mSwitchHand;\n	private SelectedCard mSwitchFaceUp;\n	private List<Card> mPlay = new LinkedList<Card>();\n	private ImageView mTurnChip = null;\n	private ImageView[] mRibbons = null;\n	private int mRibbonDrawables[] = { R.drawable.ribbon_1, R.drawable.ribbon_2, R.drawable.ribbon_3 };\n\n	@Override\n	protected void onCreate(Bundle savedInstanceState) {\n		super.onCreate(savedInstanceState);\n		setContentView(R.layout.game);\n		mGame = (GameStateResponse) getIntent().getSerializableExtra(\"com.hansson.shithead.LoadGame\");\n		initializeGameBoard();\n	}\n\n	private void initializeGameBoard() {\n		// Initialize player cards\n		HorizontalScrollView container = (HorizontalScrollView) findViewById(R.id.hand_container);\n		LinearLayout hand = (LinearLayout) container.getChildAt(0);\n		hand.removeAllViews();\n		Collections.sort(mGame.getHand());\n		for (Card card : mGame.getHand()) {\n			ImageView image = new ImageView(mContext);\n			image.setImageResource(Constants.CARD_MAP.get(card.toString()));\n			image.setOnClickListener(new L_HandCardClick(card));\n			image.setPadding(0, 0, 1, 0);\n			hand.addView(image);\n		}\n		LinearLayout faceUpFaceDown = (LinearLayout) findViewById(R.id.face_up_down_container);\n		faceUpFaceDown.removeAllViews();\n		for (Card card : mGame.getFaceUp()) {\n			ImageView image = new ImageView(mContext);\n			image.setImageResource(Constants.CARD_MAP.get(card.toString()));\n			image.setOnClickListener(new L_FaceUpCardClick(card));\n			image.setPadding(0, 0, 1, 0);\n			faceUpFaceDown.addView(image);\n		}\n		for (int i = mGame.getFaceUp().size(); i < mGame.getFaceDown(); i++) {\n			ImageView image = new ImageView(mContext);\n			image.setImageResource(R.drawable.back_card);\n			image.setOnClickListener(new L_FaceDownCardClick(i));\n			image.setPadding(0, 0, 1, 0);\n			faceUpFaceDown.addView(image);\n		}\n		// Create 1st, 2nd, 3rd place ribbons if they does not already exist\n		if (mRibbons == null) {\n			mRibbons = new ImageView[3];\n			for (int i = 0; i < 3; i++) {\n				mRibbons[i] = new ImageView(mContext);\n				mRibbons[i].setImageResource(mRibbonDrawables[i]);\n				mRibbons[i].setVisibility(View.INVISIBLE);\n			}\n		}\n		// If player should have a ribbon, show it!\n		if (mGame.getPosition() != 0) {\n			faceUpFaceDown.addView(mRibbons[mGame.getPosition() - 1]);\n			mRibbons[mGame.getPosition() - 1].setVisibility(View.VISIBLE);\n		}\n		// Initiate opponents\n		List<Opponent> opponents = mGame.getOpponents();\n		for (int j = 0; j < opponents.size(); j++) {\n			// Init\n			Map<String, Integer> cardMap = getCardMap(j);\n			int[] handPadding = getHandPadding(j);\n			int[] cardPadding = getCardPadding(j);\n			int[] nameImageValues = getNameImageValues(j);\n			int backCardId = getBackCardId(j);\n			// Processing\n			// Get current opponent\n			Opponent opponent = opponents.get(j);\n			LinearLayout opponentContainer = (LinearLayout) findViewById(getContainerId(j));\n			// Clear views\n			opponentContainer.removeAllViews();\n			// Get hand container and add text with number of cards on hand\n			RelativeLayout opponentHand = (RelativeLayout) getLayoutInflater().inflate(R.layout.opponent_hand, null);\n			opponentHand.setPadding(handPadding[0], handPadding[1], handPadding[2], handPadding[3]);\n			ImageView opponentFaceDownCards = (ImageView) opponentHand.getChildAt(0);\n			opponentFaceDownCards.setImageResource(backCardId);\n			TextView text = (TextView) opponentHand.getChildAt(1);\n			text.setText(\"\" + opponent.getOnHand());\n			opponentContainer.addView(opponentHand);\n			// Show opponent face up cards\n			for (Card card : opponent.getFaceUp()) {\n				ImageView opponentFaceDownCard = new ImageView(mContext);\n				opponentFaceDownCard.setImageResource(cardMap.get(card.toString()));\n				opponentFaceDownCard.setPadding(cardPadding[0], cardPadding[1], cardPadding[2], cardPadding[3]);\n				opponentContainer.addView(opponentFaceDownCard);\n			}\n			// If face up cards is less than the three you started with show some face down cards\n			for (int i = opponent.getFaceUp().size(); i < opponent.getFaceDown(); i++) {\n				ImageView opponentFaceUpCard = new ImageView(mContext);\n				opponentFaceUpCard.setImageResource(backCardId);\n				opponentFaceUpCard.setPadding(cardPadding[0], cardPadding[1], cardPadding[2], cardPadding[3]);\n				opponentContainer.addView(opponentFaceUpCard);\n			}\n			// Draw opponent name\n			ImageView opponentName = (ImageView) findViewById(getNameId(j));\n			Bitmap bitmap = Bitmap.createBitmap(nameImageValues[0], nameImageValues[1], Bitmap.Config.ARGB_8888);\n			Paint paint = new Paint();\n			paint.setTextSize(40);\n			Canvas canvas = new Canvas(bitmap);\n			canvas.rotate(nameImageValues[2]);\n			canvas.drawText(opponent.getUsername(), nameImageValues[3], nameImageValues[4], paint);\n			opponentName.setImageBitmap(bitmap);\n			// If opponent should have a ribbon, show it!\n			if (opponent.getPosition() != 0) {\n				opponentContainer.addView(mRibbons[opponent.getPosition() - 1]);\n				mRibbons[opponent.getPosition() - 1].setVisibility(View.VISIBLE);\n			}\n		}\n		// Initiate Pile and deck\n		ImageView pile = (ImageView) findViewById(R.id.pile);\n		if (mGame.getPile().size() == 0) {\n			pile.setImageResource(R.drawable.placeholder_1_card);\n		} else {\n			Card card = mGame.getPile().get(mGame.getPile().size() - 1);\n			pile.setImageResource(Constants.CARD_MAP.get(card.toString()));\n		}\n		ImageView deck = (ImageView) findViewById(R.id.deck);\n		if (mGame.getDeckSize() == 0) {\n			deck.setImageResource(R.drawable.placeholder_1_card);\n		} else {\n			deck.setImageResource(R.drawable.back_card);\n		}\n		// Place turn chip\n		placeTurnChip(opponents);\n		// Initiate button mode Playing/Switching\n		if (mGame.isSwitching()) {\n			Button done = (Button) findViewById(R.id.button1);\n			done.setText(R.string.done);\n			done.setOnClickListener(new L_DoneSwitching());\n			Button none = (Button) findViewById(R.id.button2);\n			none.setVisibility(View.INVISIBLE);\n			Button switchCards = (Button) findViewById(R.id.button3);\n			switchCards.setText(R.string.switch_card);\n			switchCards.setOnClickListener(new L_SwitchCards());\n			if (!mGame.isPlayerSwitching()) {\n				done.setEnabled(false);\n				switchCards.setEnabled(false);\n			}\n		} else {\n			Button play = (Button) findViewById(R.id.button1);\n			play.setEnabled(true);\n			play.setText(R.string.play);\n			play.setOnClickListener(new L_Play());\n			Button chance = (Button) findViewById(R.id.button2);\n			chance.setVisibility(View.VISIBLE);\n			chance.setOnClickListener(new L_Chance());\n			chance.setText(R.string.chance);\n			Button pileButton = (Button) findViewById(R.id.button3);\n			pileButton.setEnabled(true);\n			pileButton.setText(R.string.pile);\n			pileButton.setOnClickListener(new L_Pile());\n		}\n	}\n\n	private void placeTurnChip(List<Opponent> opponents) {\n		SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n		String username = settings.getString(Constants.PREF_USERNAME, \"\");\n		RelativeLayout gameboard = (RelativeLayout) findViewById(R.id.gameboard);\n		if (mTurnChip == null) {\n			mTurnChip = new ImageView(mContext);\n			mTurnChip.setImageResource(R.drawable.turn_chip);\n		} else {\n			gameboard.removeView(mTurnChip);\n		}\n		RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);\n		if (mGame.getCurrentPlayer().equals(username)) {\n			p.addRule(RelativeLayout.RIGHT_OF, R.id.face_up_down_container);\n			p.addRule(RelativeLayout.ABOVE, R.id.hand_container);\n			mTurnChip.setLayoutParams(p);\n			mTurnChip.setPadding(15, 0, 0, 15);\n			mTurnChip.setVisibility(View.VISIBLE);\n		} else if (mGame.getCurrentPlayer().equals(opponents.get(0).getUsername())) {\n			p.addRule(RelativeLayout.BELOW, R.id.op_left_container);\n			mTurnChip.setLayoutParams(p);\n			mTurnChip.setPadding(10, 10, 0, 0);\n			mTurnChip.setVisibility(View.VISIBLE);\n		} else if (mGame.getCurrentPlayer().equals(opponents.get(1).getUsername())) {\n			p.addRule(RelativeLayout.RIGHT_OF, R.id.op_top_container);\n			mTurnChip.setLayoutParams(p);\n			mTurnChip.setPadding(10, 10, 0, 0);\n			mTurnChip.setVisibility(View.VISIBLE);\n		} else if (mGame.getCurrentPlayer().equals(opponents.get(2).getUsername())) {\n			p.addRule(RelativeLayout.BELOW, R.id.op_right_container);\n			p.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);\n			mTurnChip.setLayoutParams(p);\n			mTurnChip.setPadding(0, 10, 10, 0);\n			mTurnChip.setVisibility(View.VISIBLE);\n		} else {\n			mTurnChip.setVisibility(View.INVISIBLE);\n		}\n		gameboard.addView(mTurnChip);\n	}\n\n	@Override\n	protected void handleGCMMessage(String message) {\n		System.out.println(message);\n		if (message.contains(\"{\")) {\n			Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").create();\n			GCMBaseMessage fromJson = gson.fromJson(message, GCMBaseMessage.class);\n			if (fromJson.getGCMType().equals(GCMTypes.GCM_SWITCHING_DONE)) {\n				GCMSwitchingDone gcmMessage = gson.fromJson(message, GCMSwitchingDone.class);\n				if (gcmMessage.getGameId().equals(mGame.getId())) {\n					new AT_UpdateGameState().execute(mGame.getId());\n				}\n			} else if (fromJson.getGCMType() == GCMTypes.GCM_PLAYER_MOVE) {\n				GCMPlayerMove gcmMessage = gson.fromJson(message, GCMPlayerMove.class);\n				if (gcmMessage.getGameId().equals(mGame.getId())) {\n					for (Opponent opponent : mGame.getOpponents()) {\n						if (opponent.getUsername().equals(mGame.getCurrentPlayer())) {\n							if (gcmMessage.getGameEvent() == Event.EXPLODE || gcmMessage.getGameEvent() == Event.FOUR) {\n								mGame.getPile().clear();\n							} else if (gcmMessage.getGameEvent() == Event.NONE) {\n								mGame.getPile().addAll(gcmMessage.getPlayerMove());\n							} else if (gcmMessage.getGameEvent() == Event.PILE) {\n								opponent.setOnHand(mGame.getPile().size() + 1);\n								mGame.getPile().clear();\n							}\n							opponent.setFaceUp(gcmMessage.getFaceUpCards());\n							opponent.setOnHand(gcmMessage.getHandCards());\n							mGame.setCurrentPlayer(gcmMessage.getNextPlayer());\n							break;\n						}\n					}\n					initializeGameBoard();\n				}\n			} else if (fromJson.getGCMType() == GCMTypes.GCM_PLAYER_MOVE_FACE_DOWN) {\n				GCMPlayerMoveFaceDown gcmMessage = gson.fromJson(message, GCMPlayerMoveFaceDown.class);\n				if (gcmMessage.getGameId().equals(mGame.getId())) {\n					for (Opponent opponent : mGame.getOpponents()) {\n						if (opponent.getUsername().equals(mGame.getCurrentPlayer())) {\n							opponent.setFaceDown(opponent.getFaceDown() - 1);\n							if (gcmMessage.getGameEvent() == Event.EXPLODE || gcmMessage.getGameEvent() == Event.FOUR) {\n								mGame.getPile().clear();\n							} else if (gcmMessage.getGameEvent() == Event.NONE) {\n								mGame.getPile().add(gcmMessage.getFaceDownCard());\n							} else if (gcmMessage.getGameEvent() == Event.PILE) {\n								opponent.setOnHand(mGame.getPile().size() + 1);\n								mGame.getPile().clear();\n							} else if (gcmMessage.getGameEvent() == Event.CHANCE) {\n								mGame.setDeckSize(mGame.getDeckSize() - 1);\n							}\n							mGame.setCurrentPlayer(gcmMessage.getNextPlayer());\n							break;\n						}\n					}\n					initializeGameBoard();\n				}\n			}\n		}\n	}\n\n	private int[] getNameImageValues(int j) {\n		// width, height, rotate, x, y\n		switch (j) {\n			case 0:\n				int[] leftPadding = { 30, 100, -90, -100, 30 };\n				return leftPadding;\n			case 1:\n				int[] topPadding = { 100, 30, 0, 0, 30 };\n				return topPadding;\n			case 2:\n				int[] rightPadding = { 30, 100, 90, 0, 0 };\n				return rightPadding;\n			default:\n				int[] defaultPadding = { 0, 0, 0, 0, 0 };\n				return defaultPadding;\n		}\n	}\n\n	private int[] getCardPadding(int j) {\n		switch (j) {\n			case 0:\n				int[] leftPadding = { 0, 0, 0, 1 };\n				return leftPadding;\n			case 1:\n				int[] topPadding = { 0, 0, 1, 0 };\n				return topPadding;\n			case 2:\n				int[] rightPadding = { 0, 0, 0, 1 };\n				return rightPadding;\n			default:\n				int[] defaultPadding = { 0, 0, 0, 0 };\n				return defaultPadding;\n		}\n	}\n\n	private int[] getHandPadding(int j) {\n		switch (j) {\n			case 0:\n				int[] leftPadding = { 0, 0, 0, 10 };\n				return leftPadding;\n			case 1:\n				int[] topPadding = { 0, 0, 10, 0 };\n				return topPadding;\n			case 2:\n				int[] rightPadding = { 0, 0, 0, 10 };\n				return rightPadding;\n			default:\n				int[] defaultPadding = { 0, 0, 0, 0 };\n				return defaultPadding;\n		}\n	}\n\n	private int getNameId(int j) {\n		switch (j) {\n			case 0:\n				return R.id.op_left_name;\n			case 1:\n				return R.id.op_top_name;\n			case 2:\n				return R.id.op_right_name;\n			default:\n				return -1;\n		}\n	}\n\n	private Map<String, Integer> getCardMap(int j) {\n		switch (j) {\n			case 0:\n				return Constants.HORIZONTAL_OPPONENT_CARD_MAP;\n			case 1:\n				return Constants.VERTICAL_OPPONENT_CARD_MAP;\n			case 2:\n				return Constants.HORIZONTAL_OPPONENT_CARD_MAP;\n			default:\n				return new HashMap<String, Integer>();\n		}\n	}\n\n	private int getBackCardId(int j) {\n		switch (j) {\n			case 0:\n				return R.drawable.hor_op_back_card;\n			case 1:\n				return R.drawable.op_back_card;\n			case 2:\n				return R.drawable.hor_op_back_card;\n			default:\n				return -1;\n		}\n	}\n\n	private int getContainerId(int j) {\n		switch (j) {\n			case 0:\n				return R.id.op_left_container;\n			case 1:\n				return R.id.op_top_container;\n			case 2:\n				return R.id.op_right_container;\n			default:\n				return -1;\n		}\n	}\n\n	private class L_Pile implements OnClickListener {\n\n		@Override\n		public void onClick(View v) {\n			if (!mGame.isFinished() && checkChanceTakePile()) {\n				new AT_TakePile().execute();\n			} else {\n				Toast.makeText(mContext, R.string.not_pile, Toast.LENGTH_LONG).show();\n			}\n		}\n	}\n\n	private class L_Chance implements OnClickListener {\n\n		@Override\n		public void onClick(View v) {\n			if (!mGame.isFinished() && checkChanceTakePile()) {\n				new AT_Chance().execute();\n			} else {\n				Toast.makeText(mContext, R.string.not_chance, Toast.LENGTH_LONG).show();\n			}\n		}\n	}\n\n	private class L_Play implements OnClickListener {\n\n		@Override\n		public void onClick(View v) {\n			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n			String username = settings.getString(Constants.PREF_USERNAME, \"\");\n			if (!mGame.isFinished() && !mGame.isSwitching() && mGame.getCurrentPlayer().equalsIgnoreCase(username)) {\n				if (moveIsValid()) {\n					new AT_SendMove().execute();\n				} else {\n					Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();\n				}\n			} else {\n				Toast.makeText(mContext, R.string.not_your_turn, Toast.LENGTH_LONG).show();\n			}\n		}\n\n		private boolean moveIsValid() {\n			boolean valid = false;\n			int value = 0;\n			for (Card card : mPlay) {\n				if (value == 0) {\n					value = card.getValue();\n				}\n				// If the same value on every card and card value is same or higher than pile top, or pile is empty. Or is 2 or 10\n				if (value == card.getValue()\n						&& (card.getValue() == 10 || card.getValue() == 2 || mGame.getPile().size() == 0 || card.getValue() >= mGame.getPile().get(\n								mGame.getPile().size() - 1).getValue())) {\n					valid = true;\n				} else {\n					valid = false;\n					break;\n				}\n			}\n			return valid;\n		}\n	}\n\n	private class L_SwitchCards implements OnClickListener {\n\n		@Override\n		public void onClick(View v) {\n			if (!mGame.isFinished() && mGame.isSwitching() && mSwitchFaceUp != null && mSwitchHand != null) {\n				// GUI Switching\n				mSwitchHand.getResource().setImageResource(Constants.CARD_MAP.get(mSwitchFaceUp.getCard().toString()));\n				mSwitchHand.getResource().setOnClickListener(new L_HandCardClick(mSwitchFaceUp.getCard()));\n				mSwitchHand.getResource().setColorFilter(Color.BLUE, PorterDuff.Mode.DST_ATOP);\n				mSwitchFaceUp.getResource().setImageResource(Constants.CARD_MAP.get(mSwitchHand.getCard().toString()));\n				mSwitchFaceUp.getResource().setOnClickListener(new L_FaceUpCardClick(mSwitchHand.getCard()));\n				mSwitchFaceUp.getResource().setColorFilter(Color.BLUE, PorterDuff.Mode.DST_ATOP);\n				// GameState Switching\n				int indexOfHand = mGame.getHand().indexOf(mSwitchHand.getCard());\n				int indexOfFaceUp = mGame.getFaceUp().indexOf(mSwitchFaceUp.getCard());\n				mGame.getFaceUp().add(indexOfFaceUp, mGame.getHand().get(indexOfHand));\n				mGame.getHand().add(indexOfHand, mGame.getFaceUp().get(indexOfFaceUp + 1));\n				mGame.getHand().remove(mSwitchHand.getCard());\n				mGame.getFaceUp().remove(mSwitchFaceUp.getCard());\n				mSwitchFaceUp = null;\n				mSwitchFaceUp = null;\n			}\n		}\n	}\n\n	private class L_DoneSwitching implements OnClickListener {\n\n		@Override\n		public void onClick(View v) {\n			if (mGame.isSwitching()) {\n				findViewById(R.id.progress).setVisibility(View.VISIBLE);\n				new AT_SendSwitchDone().execute();\n			}\n		}\n	}\n\n	private class L_FaceDownCardClick implements OnClickListener {\n\n		private int mIndex;\n\n		public L_FaceDownCardClick(int i) {\n			mIndex = i;\n		}\n\n		@Override\n		public void onClick(View v) {\n			if (mGame.getHand().size() == 0 && mGame.getFaceUp().size() == 0) {\n				new AT_SendFaceDown().execute(mIndex);\n			}\n		}\n	}\n\n	private class L_FaceUpCardClick implements OnClickListener {\n\n		private Card mCard;\n		\n		public L_FaceUpCardClick(Card card) {\n			mCard = card;\n		}\n\n		@Override\n		public void onClick(View v) {\n			// Cast view to image view\n			ImageView thisImage = (ImageView) v;\n			// If game is switching only one card can be chosen from hand and one from head up\n			if (mGame.isSwitching()) {\n				LinearLayout findViewById = (LinearLayout) findViewById(R.id.face_up_down_container);\n				// Iterate all cards and set them to not selected\n				for (int i = 0; i < findViewById.getChildCount(); i++) {\n					ImageView childAt = (ImageView) findViewById.getChildAt(i);\n					childAt.setColorFilter(Color.BLUE, PorterDuff.Mode.DST_ATOP);\n				}\n				thisImage.setColorFilter(Color.BLUE, PorterDuff.Mode.SCREEN);\n				mSwitchFaceUp = new SelectedCard(mCard, thisImage);\n			} else if (mGame.getHand().size() == 0) {\n				// Toggle selected/not selected\n				if (mPlay.remove(mCard)) {\n					thisImage.setColorFilter(Color.BLUE, PorterDuff.Mode.DST_ATOP);\n				} else {\n					thisImage.setColorFilter(Color.BLUE, PorterDuff.Mode.SCREEN);\n					mPlay.add(mCard);\n				}\n			}\n		}\n	}\n\n	private class L_HandCardClick implements OnClickListener {\n\n		private Card mCard;\n\n		public L_HandCardClick(Card card) {\n			mCard = card;\n		}\n\n		@Override\n		public void onClick(View v) {\n			// Cast view to image view\n			ImageView thisImage = (ImageView) v;\n			// If game is switching only one card can be chosen from hand and one from head up\n			if (mGame.isSwitching()) {\n				HorizontalScrollView findViewById = (HorizontalScrollView) findViewById(R.id.hand_container);\n				LinearLayout hand = (LinearLayout) findViewById.getChildAt(0);\n				// Iterate all cards and set them to not selected\n				for (int i = 0; i < hand.getChildCount(); i++) {\n					ImageView childAt = (ImageView) hand.getChildAt(i);\n					childAt.setColorFilter(Color.BLUE, PorterDuff.Mode.DST_ATOP);\n				}\n				// Set the current card to selected\n				thisImage.setColorFilter(Color.BLUE, PorterDuff.Mode.SCREEN);\n				mSwitchHand = new SelectedCard(mCard, thisImage);\n			} else {\n				// Toggle selected/not selected\n				if (mPlay.remove(mCard)) {\n					thisImage.setColorFilter(Color.BLUE, PorterDuff.Mode.DST_ATOP);\n				} else {\n					thisImage.setColorFilter(Color.BLUE, PorterDuff.Mode.SCREEN);\n					mPlay.add(mCard);\n				}\n			}\n		}\n	}\n\n	private class AT_SendFaceDown extends AsyncTask<Integer, Void, String> {\n\n		@Override\n		protected String doInBackground(Integer... params) {\n			FaceDownRequest request = new FaceDownRequest();\n			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n			request.setSessionId(settings.getString(Constants.PREF_SESSION, \"\"));\n			request.setGameId(mGame.getId());\n			request.setIndex(params[0]);\n			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(request, \"move/face-down\");\n			return sendAndRecieveGson;\n		}\n\n		@Override\n		protected void onPostExecute(String result) {\n			try {\n				findViewById(R.id.progress).setVisibility(View.GONE);\n				if (result.equals(Constants.CONNECTION_ERROR)) {\n					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();\n				} else {\n					Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").create();\n					MoveResponse response = gson.fromJson(result, MoveResponse.class);\n					if (response.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {\n						Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();\n					} else if (response.getStatus() == ResponseStatus.INVALID_GAME) {\n						Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();\n					} else if (response.getStatus() == ResponseStatus.OK) {\n						mGame.setFaceDown(mGame.getFaceDown() - 1);\n						mPlay.clear();\n						mGame.setCurrentPlayer(response.getNextPlayer());\n						if (response.getGameEvent() == Event.NONE) {\n							mGame.getPile().addAll(response.getNewCards());\n						} else if (response.getGameEvent() == Event.PILE) {\n							mGame.getPile().clear();\n							mGame.getHand().addAll(response.getNewCards());\n							// getNewCards[0] should be the face down card\n						} else {\n							mGame.getPile().clear();\n						}\n						initializeGameBoard();\n						if (mGame.getHand().size() == 0 && mGame.getFaceUp().size() == 0 && mGame.getFaceDown() == 0) {\n							new AT_UpdateGameState().execute(mGame.getId());\n						}\n					} else if (response.getStatus() == ResponseStatus.NOT_OK) {\n						Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();\n					}\n				}\n			} catch (Exception e) {\n				Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();\n				e.printStackTrace();\n			}\n		}\n	}\n\n	private class AT_Chance extends AsyncTask<Void, Void, String> {\n\n		@Override\n		protected String doInBackground(Void... params) {\n			MoveRequest request = new MoveRequest(MoveType.CHANCE);\n			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n			request.setSessionId(settings.getString(Constants.PREF_SESSION, \"\"));\n			request.setGameId(mGame.getId());\n			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(request, \"move\");\n			return sendAndRecieveGson;\n		}\n\n		@Override\n		protected void onPostExecute(String result) {\n			try {\n				findViewById(R.id.progress).setVisibility(View.GONE);\n				if (result.equals(Constants.CONNECTION_ERROR)) {\n					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();\n				} else {\n					Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").create();\n					MoveResponse response = gson.fromJson(result, MoveResponse.class);\n					if (response.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {\n						Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();\n					} else if (response.getStatus() == ResponseStatus.INVALID_GAME) {\n						Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();\n					} else if (response.getStatus() == ResponseStatus.OK) {\n						mGame.getPile().addAll(mPlay);\n						mPlay.clear();\n						if (response.getNewCards() != null) {\n							mGame.getHand().addAll(response.getNewCards());\n						}\n						initializeGameBoard();\n					} else if (response.getStatus() == ResponseStatus.CHANCE_TAKEN) {\n						Toast.makeText(mContext, R.string.invalid_chance, Toast.LENGTH_LONG).show();\n					} else if (response.getStatus() == ResponseStatus.NOT_OK) {\n						Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();\n					}\n				}\n			} catch (Exception e) {\n				Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();\n				e.printStackTrace();\n			}\n		}\n	}\n\n	private class AT_TakePile extends AsyncTask<Void, Void, String> {\n\n		@Override\n		protected String doInBackground(Void... params) {\n			MoveRequest request = new MoveRequest(MoveType.PILE);\n			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n			request.setSessionId(settings.getString(Constants.PREF_SESSION, \"\"));\n			request.setGameId(mGame.getId());\n			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(request, \"move\");\n			return sendAndRecieveGson;\n		}\n\n		@Override\n		protected void onPostExecute(String result) {\n			try {\n				findViewById(R.id.progress).setVisibility(View.GONE);\n				if (result.equals(Constants.CONNECTION_ERROR)) {\n					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();\n				} else {\n					Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").create();\n					MoveResponse response = gson.fromJson(result, MoveResponse.class);\n					if (response.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {\n						Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();\n					} else if (response.getStatus() == ResponseStatus.INVALID_GAME) {\n						Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();\n					} else if (response.getStatus() == ResponseStatus.OK) {\n						mGame.getPile().clear();\n						mPlay.clear();\n						mGame.setCurrentPlayer(response.getNextPlayer());\n						mGame.getHand().addAll(response.getNewCards());\n						initializeGameBoard();\n					} else if (response.getStatus() == ResponseStatus.NOT_OK) {\n						Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();\n					}\n				}\n			} catch (Exception e) {\n				Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();\n				e.printStackTrace();\n			}\n		}\n	}\n\n	private class AT_SendMove extends AsyncTask<Void, Void, String> {\n\n		@Override\n		protected String doInBackground(Void... params) {\n			MoveRequest request = new MoveRequest(MoveType.MOVE);\n			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n			request.setSessionId(settings.getString(Constants.PREF_SESSION, \"\"));\n			request.setGameId(mGame.getId());\n			request.setCards(mPlay);\n			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(request, \"move\");\n			return sendAndRecieveGson;\n		}\n\n		@Override\n		protected void onPostExecute(String result) {\n			try {\n				findViewById(R.id.progress).setVisibility(View.GONE);\n				if (result.equals(Constants.CONNECTION_ERROR)) {\n					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();\n				} else {\n					Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").create();\n					BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);\n					if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {\n						Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();\n					} else if (fromJson.getStatus() == ResponseStatus.INVALID_GAME) {\n						Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();\n					} else if (fromJson.getStatus() == ResponseStatus.OK) {\n						MoveResponse response = gson.fromJson(result, MoveResponse.class);\n						if (response.getGameEvent() == Event.NONE) {\n							handleMoveNoEvent(response);\n						} else if (response.getGameEvent() == Event.FOUR || response.getGameEvent() == Event.EXPLODE) {\n							handleMoveFourOrExplode(response);\n						}\n						if (mGame.getHand().size() == 0 && mGame.getFaceUp().size() == 0 && mGame.getFaceDown() == 0) {\n							new AT_UpdateGameState().execute(mGame.getId());\n						}\n					} else if (fromJson.getStatus() == ResponseStatus.NOT_OK) {\n						Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();\n					}\n				}\n			} catch (Exception e) {\n				Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();\n				e.printStackTrace();\n			}\n		}\n\n		private void handleMoveFourOrExplode(MoveResponse response) {\n			mGame.getPile().clear();\n			mGame.getHand().removeAll(mPlay);\n			mGame.getFaceUp().removeAll(mPlay);\n			mPlay.clear();\n			if (response.getNewCards() != null) {\n				mGame.getHand().addAll(response.getNewCards());\n			}\n			initializeGameBoard();\n		}\n\n		private void handleMoveNoEvent(MoveResponse response) {\n			mGame.getPile().addAll(mPlay);\n			mGame.getHand().removeAll(mPlay);\n			mGame.getFaceUp().removeAll(mPlay);\n			mPlay.clear();\n			mGame.setCurrentPlayer(response.getNextPlayer());\n			if (response.getNewCards() != null) {\n				mGame.getHand().addAll(response.getNewCards());\n			}\n			initializeGameBoard();\n		}\n	}\n\n	private class AT_SendSwitchDone extends AsyncTask<Void, Void, String> {\n\n		@Override\n		protected String doInBackground(Void... params) {\n			SwitchingDoneRequest request = new SwitchingDoneRequest();\n			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n			request.setSessionId(settings.getString(Constants.PREF_SESSION, \"\"));\n			request.setGameId(mGame.getId());\n			request.setFaceUp(mGame.getFaceUp());\n			request.setHand(mGame.getHand());\n			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(request, \"switch\");\n			return sendAndRecieveGson;\n		}\n\n		@Override\n		protected void onPostExecute(String result) {\n			try {\n				findViewById(R.id.progress).setVisibility(View.GONE);\n				if (result.equals(Constants.CONNECTION_ERROR)) {\n					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();\n				} else {\n					Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").create();\n					BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);\n					if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {\n						Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();\n					} else if (fromJson.getStatus() == ResponseStatus.INVALID_GAME) {\n						Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();\n					} else if (fromJson.getStatus() == ResponseStatus.OK) {\n						findViewById(R.id.button1).setEnabled(false);\n						findViewById(R.id.button3).setEnabled(false);\n					} else if (fromJson.getStatus() == ResponseStatus.NOT_OK) {\n						Toast.makeText(mContext, R.string.error_switching, Toast.LENGTH_LONG).show();\n					}\n				}\n			} catch (Exception e) {\n				Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();\n				e.printStackTrace();\n			}\n		}\n	}\n\n	private class AT_UpdateGameState extends AsyncTask<String, Void, String> {\n\n		@Override\n		protected String doInBackground(String... params) {\n			GameStateRequest request = new GameStateRequest();\n			request.setGameId(params[0]);\n			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);\n			request.setSessionId(settings.getString(Constants.PREF_SESSION, \"\"));\n			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(request, \"game\");\n			return sendAndRecieveGson;\n		}\n\n		@Override\n		protected void onPostExecute(String result) {\n			try {\n				if (result.equals(Constants.CONNECTION_ERROR)) {\n					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();\n				} else {\n					Gson gson = new GsonBuilder().setDateFormat(\"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'\").create();\n					GameStateResponse fromJson = gson.fromJson(result, GameStateResponse.class);\n					if (fromJson.getStatus() == ResponseStatus.OK) {\n						mGame = fromJson;\n						initializeGameBoard();\n					} else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {\n						Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();\n					} else if (fromJson.getStatus() == ResponseStatus.INVALID_GAME) {\n						Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();\n					}\n				}\n			} catch (Exception e) {\n				Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();\n				e.printStackTrace();\n			}\n		}\n	}\n\n	private boolean checkChanceTakePile() {\n		boolean valid = true;\n		if (mGame.getPile().size() == 0) {\n			valid = false;\n		} else if (mGame.getHand().size() > 0) {\n			for (Card card : mGame.getHand()) {\n				if (card.getValue() == 2 || card.getValue() == 10 || card.getValue() >= mGame.getPile().get(mGame.getPile().size() - 1).getValue()) {\n					valid = false;\n					break;\n				}\n			}\n		} else if (mGame.getFaceUp().size() > 0) {\n			for (Card card : mGame.getFaceUp()) {\n				if (card.getValue() == 2 || card.getValue() == 10 || card.getValue() >= mGame.getPile().get(mGame.getPile().size() - 1).getValue()) {\n					valid = false;\n					break;\n				}\n			}\n		} else {\n			valid = false;\n		}\n		return valid;\n	}\n}\n",
+			"file": "src/com/hansson/shithead/activities/GameActivity.java",
+			"file_size": 34878,
+			"file_write_time": 1366297338000000,
+			"settings":
+			{
+				"buffer_size": 33972,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "src/com/hansson/shithead/activities/RegisterActivity.java",
+			"settings":
+			{
+				"buffer_size": 3889,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "res/values/strings.xml",
+			"settings":
+			{
+				"buffer_size": 7681,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 449.0
+	},
+	"console":
+	{
+		"height": 139.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/hansson/workspace/shh/ShitHead/shithead.sublime-workspace",
+		"/home/hansson/workspace/shh/ShitHead/shithead.sublime-project",
+		"/home/hansson/.config/sublime-text-2/Packages/User/Default (Linux).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 0.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 2,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "src/com/hansson/shithead/activities/GameActivity.java",
+					"settings":
+					{
+						"buffer_size": 33972,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								18469,
+								18469
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 8670.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "src/com/hansson/shithead/activities/RegisterActivity.java",
+					"settings":
+					{
+						"buffer_size": 3889,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1926,
+								1926
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Java/Java.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 476.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "res/values/strings.xml",
+					"settings":
+					{
+						"buffer_size": 7681,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6451,
+								6451
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/XML/XML.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1165.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 0.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"string",
+				"res/values/strings.xml"
+			],
+			[
+				"registerac",
+				"src/com/hansson/shithead/activities/RegisterActivity.java"
+			],
+			[
+				"gameact",
+				"src/com/hansson/shithead/activities/GameActivity.java"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"sh",
+				"/home/hansson/workspace/shh/sh_node/sh_node.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 218.0,
+	"status_bar_visible": true
+}
