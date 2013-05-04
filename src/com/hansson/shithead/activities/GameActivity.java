@@ -414,7 +414,7 @@ public class GameActivity extends GCMActivity {
 
 		@Override
 		public void onClick(View v) {
-			if (!mGame.isFinished() && checkChanceTakePile()) {
+			if (!mGame.isFinished() && mGame.getPile().size() != 0) {
 				new AT_TakePile().execute();
 			} else {
 				Toast.makeText(mContext, R.string.not_pile, Toast.LENGTH_LONG).show();
@@ -426,7 +426,7 @@ public class GameActivity extends GCMActivity {
 
 		@Override
 		public void onClick(View v) {
-			if (!mGame.isFinished() && checkChanceTakePile()) {
+			if (!mGame.isFinished() && checkTakeChance()) {
 				new AT_Chance().execute();
 			} else {
 				Toast.makeText(mContext, R.string.not_chance, Toast.LENGTH_LONG).show();
@@ -882,7 +882,7 @@ public class GameActivity extends GCMActivity {
 		}
 	}
 
-	private boolean checkChanceTakePile() {
+	private boolean checkTakeChance() {
 		boolean valid = true;
 		if (mGame.getPile().size() == 0) {
 			valid = false;
