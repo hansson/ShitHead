@@ -14,6 +14,12 @@
     <string name="activated">User activated! You may now log in!</string>
     <string name="auto_login">Auto login</string>
     <string name="info">Player info</string>
+    <string name="remove">Remove</string>
+    <string name="avatar">Avatar</string>
+    <string name="accept">Accept</string>
+    <string name="deny">Deny</string>
+    <string name="search">Friend username</string>
+    <string name="add">Add</string>
 
     <!-- MENU -->
     <string name="quick_game">Start game</string>

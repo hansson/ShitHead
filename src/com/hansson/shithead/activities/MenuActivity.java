@@ -1,16 +1,5 @@
 package com.hansson.shithead.activities;
 
-import com.hansson.sh_shared.gcm.GCMBaseMessage;
-import com.hansson.sh_shared.gcm.GCMGameStart;
-import com.hansson.sh_shared.gcm.GCMTypes;
-import com.hansson.sh_shared.rr.ActiveGame;
-import com.hansson.sh_shared.rr.ActiveGamesResponse;
-import com.hansson.sh_shared.rr.BasicRequest;
-import com.hansson.sh_shared.rr.GameStateRequest;
-import com.hansson.sh_shared.rr.GameStateResponse;
-import com.hansson.sh_shared.rr.ResponseStatus;
-import com.hansson.shithead.R;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -26,6 +15,16 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hansson.sh_shared.gcm.GCMBaseMessage;
+import com.hansson.sh_shared.gcm.GCMGameStart;
+import com.hansson.sh_shared.gcm.GCMTypes;
+import com.hansson.sh_shared.rr.ActiveGame;
+import com.hansson.sh_shared.rr.ActiveGamesResponse;
+import com.hansson.sh_shared.rr.BasicRequest;
+import com.hansson.sh_shared.rr.GameStateRequest;
+import com.hansson.sh_shared.rr.GameStateResponse;
+import com.hansson.sh_shared.rr.ResponseStatus;
+import com.hansson.shithead.R;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
 
@@ -61,6 +60,10 @@ public class MenuActivity extends GCMActivity {
 	}
 
 	public void friendsListener(View v) {
+		unregisterReceiver(mHandleMessageReceiver);
+		mIsRegistered = false;
+		Intent prefIntent = new Intent(this, FriendsActivity.class);
+		this.startActivity(prefIntent);
 	}
 
 	public void logoutListener(View v) {
