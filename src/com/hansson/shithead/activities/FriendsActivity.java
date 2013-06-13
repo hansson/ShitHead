@@ -42,6 +42,13 @@ public class FriendsActivity extends GCMActivity {
 		// TODO Auto-generated method stub
 	}
 
+	private void populateFriendView(Friend friend, RelativeLayout view) {
+		TextView friendName = (TextView) view.findViewById(R.id.friend_name);
+		friendName.setText(friend.getUsername());
+		ImageView removeFriend = (ImageView) view.findViewById(R.id.remove_friend);
+		removeFriend.setOnClickListener(new L_RemoveFriend(friend));
+	}
+
 	private class AT_ListFriends extends AsyncTask<Void, Void, String> {
 
 		@Override
@@ -70,10 +77,7 @@ public class FriendsActivity extends GCMActivity {
 						for (Friend friend : fromJson.getFriends()) {
 							if (friend.isAccepted()) {
 								RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.friend, null);
-								TextView friendName = (TextView) inflate.findViewById(R.id.friend_name);
-								friendName.setText(friend.getUsername());
-								ImageView removeFriend = (ImageView) inflate.findViewById(R.id.remove_friend);
-								removeFriend.setOnClickListener(new L_RemoveFriend(friend));
+								populateFriendView(friend, inflate);
 								friendContainer.addView(inflate);
 							} else {
 								RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.accept_friend, null);
@@ -97,30 +101,38 @@ public class FriendsActivity extends GCMActivity {
 		}
 	}
 
-	private class AT_AcceptFriend extends AsyncTask<Object, Void, String> {
+	private class AT_AcceptFriend extends AsyncTask<Object, Void, Object[]> {
 
 		@Override
-		protected String doInBackground(Object... params) {
+		protected Object[] doInBackground(Object... params) {
 			AcceptFriendRequest request = new AcceptFriendRequest();
 			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
 			request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
 			request.setFriendUsername(((Friend) params[0]).getUsername());
 			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(request, "friends/accept");
-			return sendAndRecieveGson;
+			Object[] returnArray = new Object[3];
+			returnArray[0] = sendAndRecieveGson;
+			returnArray[1] = params[1];
+			returnArray[2] = params[0];
+			return returnArray;
 		}
 
 		@Override
-		protected void onPostExecute(String result) {
+		protected void onPostExecute(Object[] result) {
 			try {
 				findViewById(R.id.progress).setVisibility(View.GONE);
-				if (result.equals(Constants.CONNECTION_ERROR)) {
+				if (((String) result[0]).equals(Constants.CONNECTION_ERROR)) {
 					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
 				} else {
 					Gson gson = new Gson();
-					BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);
+					BasicResponse fromJson = gson.fromJson((String) result[0], BasicResponse.class);
 					if (fromJson.getStatus() == ResponseStatus.OK) {
 						LinearLayout friendContainer = (LinearLayout) findViewById(R.id.friend_container);
 						LinearLayout pendingFriendContainer = (LinearLayout) findViewById(R.id.pending_friend_container);
+						pendingFriendContainer.removeView((View) result[1]);
+						RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.friend, null);
+						populateFriendView((Friend) result[2], inflate);
+						friendContainer.addView(inflate);
 					} else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
 						Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
 					}
@@ -158,7 +170,7 @@ public class FriendsActivity extends GCMActivity {
 		@Override
 		public void onClick(View v) {
 			findViewById(R.id.progress).setVisibility(View.VISIBLE);
-			new AT_AcceptFriend().execute(mFriend);
+			new AT_AcceptFriend().execute(mFriend, v.getParent());
 		}
 	}
 
