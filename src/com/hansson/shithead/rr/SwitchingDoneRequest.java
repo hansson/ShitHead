@@ -1,8 +1,9 @@
-package com.hansson.sh_shared.rr;
+package com.hansson.shithead.rr;
+
+import com.hansson.shithead.entitys.Card;
 
 import java.util.List;
 
-import com.hansson.sh_shared.entitys.Card;
 
 public class SwitchingDoneRequest {
 

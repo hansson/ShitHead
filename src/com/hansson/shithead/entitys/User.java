@@ -1,4 +1,4 @@
-package com.hansson.sh_shared.entitys;
+package com.hansson.shithead.entitys;
 
 import java.util.Date;
 import java.util.LinkedList;

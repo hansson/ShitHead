@@ -15,16 +15,16 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.hansson.sh_shared.gcm.GCMBaseMessage;
-import com.hansson.sh_shared.gcm.GCMGameStart;
-import com.hansson.sh_shared.gcm.GCMTypes;
-import com.hansson.sh_shared.rr.ActiveGame;
-import com.hansson.sh_shared.rr.ActiveGamesResponse;
-import com.hansson.sh_shared.rr.BasicRequest;
-import com.hansson.sh_shared.rr.GameStateRequest;
-import com.hansson.sh_shared.rr.GameStateResponse;
-import com.hansson.sh_shared.rr.ResponseStatus;
 import com.hansson.shithead.R;
+import com.hansson.shithead.gcm.GCMBaseMessage;
+import com.hansson.shithead.gcm.GCMGameStart;
+import com.hansson.shithead.gcm.GCMTypes;
+import com.hansson.shithead.rr.ActiveGame;
+import com.hansson.shithead.rr.ActiveGamesResponse;
+import com.hansson.shithead.rr.BasicRequest;
+import com.hansson.shithead.rr.GameStateRequest;
+import com.hansson.shithead.rr.GameStateResponse;
+import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
 

@@ -1,4 +1,6 @@
-package com.hansson.sh_shared.gcm;
+package com.hansson.shithead.gcm;
+
+import com.hansson.shithead.gcm.GCMTypes;
 
 public class GCMBaseMessage {
 

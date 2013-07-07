@@ -12,13 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.hansson.sh_shared.entitys.Friend;
-import com.hansson.sh_shared.rr.AcceptFriendRequest;
-import com.hansson.sh_shared.rr.BasicRequest;
-import com.hansson.sh_shared.rr.BasicResponse;
-import com.hansson.sh_shared.rr.FriendResponse;
-import com.hansson.sh_shared.rr.ResponseStatus;
 import com.hansson.shithead.R;
+import com.hansson.shithead.entitys.Friend;
+import com.hansson.shithead.rr.AcceptFriendRequest;
+import com.hansson.shithead.rr.BasicRequest;
+import com.hansson.shithead.rr.BasicResponse;
+import com.hansson.shithead.rr.FriendResponse;
+import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
 

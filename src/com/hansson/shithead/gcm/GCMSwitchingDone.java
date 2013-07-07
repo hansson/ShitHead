@@ -1,4 +1,4 @@
-package com.hansson.sh_shared.gcm;
+package com.hansson.shithead.gcm;
 
 public class GCMSwitchingDone extends GCMBaseMessage {
 

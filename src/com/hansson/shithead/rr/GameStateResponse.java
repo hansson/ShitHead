@@ -1,12 +1,12 @@
-package com.hansson.sh_shared.rr;
+package com.hansson.shithead.rr;
+
+import com.hansson.shithead.entitys.Card;
+import com.hansson.shithead.entitys.Opponent;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import com.hansson.sh_shared.entitys.Card;
-import com.hansson.sh_shared.entitys.Opponent;
 
 public class GameStateResponse extends BasicResponse implements Serializable {
 

@@ -1,4 +1,4 @@
-package com.hansson.sh_shared.rr;
+package com.hansson.shithead.rr;
 
 public class FaceDownRequest extends BasicRequest {
 

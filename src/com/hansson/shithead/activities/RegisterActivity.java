@@ -1,8 +1,5 @@
 package com.hansson.shithead.activities;
 
-import com.hansson.sh_shared.rr.BasicResponse;
-import com.hansson.sh_shared.rr.RegistrationRequest;
-import com.hansson.sh_shared.rr.ResponseStatus;
 import com.hansson.shithead.R;
 
 import android.app.Activity;
@@ -17,6 +14,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.hansson.shithead.rr.BasicResponse;
+import com.hansson.shithead.rr.RegistrationRequest;
+import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
 import com.hansson.shithead.util.Hash;

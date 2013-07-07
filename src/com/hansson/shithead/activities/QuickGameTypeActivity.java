@@ -1,8 +1,5 @@
 package com.hansson.shithead.activities;
 
-import com.hansson.sh_shared.rr.BasicRequest;
-import com.hansson.sh_shared.rr.BasicResponse;
-import com.hansson.sh_shared.rr.ResponseStatus;
 import com.hansson.shithead.R;
 
 import android.content.SharedPreferences;
@@ -13,6 +10,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.hansson.shithead.rr.BasicRequest;
+import com.hansson.shithead.rr.BasicResponse;
+import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
 

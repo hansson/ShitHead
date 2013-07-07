@@ -1,8 +1,8 @@
 package com.hansson.shithead;
 
-import com.hansson.sh_shared.entitys.Card;
-
 import android.widget.ImageView;
+
+import com.hansson.shithead.entitys.Card;
 
 public class SelectedCard {
 

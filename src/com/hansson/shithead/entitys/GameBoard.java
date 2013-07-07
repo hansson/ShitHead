@@ -1,18 +1,17 @@
-package com.hansson.sh_shared.entitys;
+package com.hansson.shithead.entitys;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.hansson.sh_shared.gcm.GCMPlayerMoveFaceDown;
-import com.hansson.sh_shared.rr.FaceDownRequest;
-import com.hansson.sh_shared.rr.GameStateResponse;
-import com.hansson.sh_shared.rr.MoveRequest;
-import com.hansson.sh_shared.rr.MoveRequest.MoveType;
-import com.hansson.sh_shared.rr.MoveResponse;
-import com.hansson.sh_shared.rr.MoveResponse.Event;
-import com.hansson.sh_shared.rr.ResponseStatus;
+import com.hansson.shithead.entitys.BaseEntity;
+import com.hansson.shithead.gcm.GCMPlayerMoveFaceDown;
+import com.hansson.shithead.rr.FaceDownRequest;
+import com.hansson.shithead.rr.GameStateResponse;
+import com.hansson.shithead.rr.MoveRequest;
+import com.hansson.shithead.rr.MoveResponse;
+import com.hansson.shithead.rr.ResponseStatus;
 
 /**
  * This class will handle the main game logic.
@@ -170,7 +169,7 @@ public class GameBoard extends BaseEntity {
 		if (index != -1) {
 			player = mPlayers.get(index);
 			if (player.getUsername().equals(mCurrentPlayerName)) {
-				if (request.getType() == MoveType.MOVE) {
+				if (request.getType() == MoveRequest.MoveType.MOVE) {
 					boolean valid = false;
 					int value = 0;
 					// For every card
@@ -200,11 +199,11 @@ public class GameBoard extends BaseEntity {
 						// if card(s) was 10's
 						if (request.getCards().get(0).getValue() == 10) {
 							getPile().clear();
-							response.setGameEvent(Event.EXPLODE);
+							response.setGameEvent(MoveResponse.Event.EXPLODE);
 							// or if there now are 4 of a kind
 						} else if (checkFourOfAKind(request.getCards())) {
 							getPile().clear();
-							response.setGameEvent(Event.FOUR);
+							response.setGameEvent(MoveResponse.Event.FOUR);
 							// or just a normal move
 						} else {
 							do {
@@ -214,7 +213,7 @@ public class GameBoard extends BaseEntity {
 								}
 							} while (mPlayers.get(mCurrentPlayer).getPosition() != 0);
 							mCurrentPlayerName = mPlayers.get(mCurrentPlayer).getUsername();
-							response.setGameEvent(Event.NONE);
+							response.setGameEvent(MoveResponse.Event.NONE);
 							getPile().addAll(request.getCards());
 						}
 						response.setNextPlayer(mCurrentPlayerName);
@@ -227,7 +226,7 @@ public class GameBoard extends BaseEntity {
 					} else {
 						response.setStatus(ResponseStatus.NOT_OK);
 					}
-				} else if (request.getType() == MoveType.CHANCE) {
+				} else if (request.getType() == MoveRequest.MoveType.CHANCE) {
 					// if valid take pile move
 					if (mChanceTaken) {
 						response.setStatus(ResponseStatus.CHANCE_TAKEN);
@@ -240,7 +239,7 @@ public class GameBoard extends BaseEntity {
 					} else {
 						response.setStatus(ResponseStatus.NOT_OK);
 					}
-				} else if (request.getType() == MoveType.PILE) {
+				} else if (request.getType() == MoveRequest.MoveType.PILE) {
 					// if valid take chance card move
 					if (validChanceTakePile(player)) {
 						List<Card> newCards = new LinkedList<Card>();
@@ -256,7 +255,7 @@ public class GameBoard extends BaseEntity {
 						} while (mPlayers.get(mCurrentPlayer).getPosition() != 0);
 						mCurrentPlayerName = mPlayers.get(mCurrentPlayer).getUsername();
 						response.setNextPlayer(mCurrentPlayerName);
-						response.setGameEvent(Event.PILE);
+						response.setGameEvent(MoveResponse.Event.PILE);
 						response.setStatus(ResponseStatus.OK);
 						mChanceTaken = false;
 					} else {
@@ -294,10 +293,10 @@ public class GameBoard extends BaseEntity {
 					getPile().add(card);
 					if (card.getValue() == 10) {
 						getPile().clear();
-						response.setGameEvent(Event.EXPLODE);
+						response.setGameEvent(MoveResponse.Event.EXPLODE);
 					} else if (checkFourOfAKind(getPile().subList(getPile().size() - 1, getPile().size()))) {
 						getPile().clear();
-						response.setGameEvent(Event.FOUR);
+						response.setGameEvent(MoveResponse.Event.FOUR);
 					} else if (card.getValue() == 2 || getPile().size() == 0 || card.getValue() >= getPile().get(getPile().size() - 1).getValue()) {
 						do {
 							mCurrentPlayer++;
@@ -306,7 +305,7 @@ public class GameBoard extends BaseEntity {
 							}
 						} while (mPlayers.get(mCurrentPlayer).getPosition() != 0);
 						mCurrentPlayerName = mPlayers.get(mCurrentPlayer).getUsername();
-						response.setGameEvent(Event.NONE);
+						response.setGameEvent(MoveResponse.Event.NONE);
 					} else {
 						response.getNewCards().addAll(getPile());
 						player.getHand().addAll(getPile());
@@ -318,7 +317,7 @@ public class GameBoard extends BaseEntity {
 							}
 						} while (mPlayers.get(mCurrentPlayer).getPosition() != 0);
 						mCurrentPlayerName = mPlayers.get(mCurrentPlayer).getUsername();
-						response.setGameEvent(Event.PILE);
+						response.setGameEvent(MoveResponse.Event.PILE);
 					}
 					response.setNextPlayer(mCurrentPlayerName);
 					response.setStatus(ResponseStatus.OK);

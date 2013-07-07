@@ -1,16 +1,16 @@
-package com.hansson.sh_shared.gcm;
+package com.hansson.shithead.gcm;
+
+import com.hansson.shithead.entitys.Card;
+import com.hansson.shithead.rr.MoveResponse;
 
 import java.util.List;
-
-import com.hansson.sh_shared.entitys.Card;
-import com.hansson.sh_shared.rr.MoveResponse.Event;
 
 public class GCMPlayerMove extends GCMBaseMessage {
 
 	private String mGameId;
 	private String mNextPlayer;
 	private List<Card> mPlayerMove;
-	private Event mGameEvent;
+	private MoveResponse.Event mGameEvent;
 	private List<Card> mFaceUpCards;
 	private int mHandCards;
 
@@ -42,11 +42,11 @@ public class GCMPlayerMove extends GCMBaseMessage {
 		mPlayerMove = playerMove;
 	}
 
-	public Event getGameEvent() {
+	public MoveResponse.Event getGameEvent() {
 		return mGameEvent;
 	}
 
-	public void setGameEvent(Event gameEvent) {
+	public void setGameEvent(MoveResponse.Event gameEvent) {
 		mGameEvent = gameEvent;
 	}
 

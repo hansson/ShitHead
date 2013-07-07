@@ -1,14 +1,15 @@
-package com.hansson.sh_shared.gcm;
+package com.hansson.shithead.gcm;
 
-import com.hansson.sh_shared.entitys.Card;
-import com.hansson.sh_shared.rr.MoveResponse.Event;
+
+import com.hansson.shithead.entitys.Card;
+import com.hansson.shithead.rr.MoveResponse;
 
 public class GCMPlayerMoveFaceDown extends GCMBaseMessage {
 
 	private String mGameId;
 	private String mNextPlayer;
 	private Card mFaceDownCard;
-	private Event mGameEvent;
+	private MoveResponse.Event mGameEvent;
 
 	public GCMPlayerMoveFaceDown() {
 		super(GCMTypes.GCM_PLAYER_MOVE_FACE_DOWN);
@@ -30,11 +31,11 @@ public class GCMPlayerMoveFaceDown extends GCMBaseMessage {
 		mNextPlayer = nextPlayer;
 	}
 
-	public Event getGameEvent() {
+	public MoveResponse.Event getGameEvent() {
 		return mGameEvent;
 	}
 
-	public void setGameEvent(Event gameEvent) {
+	public void setGameEvent(MoveResponse.Event gameEvent) {
 		mGameEvent = gameEvent;
 	}
 

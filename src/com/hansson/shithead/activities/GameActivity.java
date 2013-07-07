@@ -27,25 +27,23 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.hansson.sh_shared.entitys.Card;
-import com.hansson.sh_shared.entitys.Opponent;
-import com.hansson.sh_shared.gcm.GCMBaseMessage;
-import com.hansson.sh_shared.gcm.GCMPlayerMove;
-import com.hansson.sh_shared.gcm.GCMPlayerMoveFaceDown;
-import com.hansson.sh_shared.gcm.GCMSwitchingDone;
-import com.hansson.sh_shared.gcm.GCMTypes;
-import com.hansson.sh_shared.rr.BasicResponse;
-import com.hansson.sh_shared.rr.FaceDownRequest;
-import com.hansson.sh_shared.rr.GameStateRequest;
-import com.hansson.sh_shared.rr.GameStateResponse;
-import com.hansson.sh_shared.rr.MoveRequest;
-import com.hansson.sh_shared.rr.MoveRequest.MoveType;
-import com.hansson.sh_shared.rr.MoveResponse;
-import com.hansson.sh_shared.rr.MoveResponse.Event;
-import com.hansson.sh_shared.rr.ResponseStatus;
-import com.hansson.sh_shared.rr.SwitchingDoneRequest;
 import com.hansson.shithead.R;
 import com.hansson.shithead.SelectedCard;
+import com.hansson.shithead.entitys.Card;
+import com.hansson.shithead.entitys.Opponent;
+import com.hansson.shithead.gcm.GCMBaseMessage;
+import com.hansson.shithead.gcm.GCMPlayerMove;
+import com.hansson.shithead.gcm.GCMPlayerMoveFaceDown;
+import com.hansson.shithead.gcm.GCMSwitchingDone;
+import com.hansson.shithead.gcm.GCMTypes;
+import com.hansson.shithead.rr.BasicResponse;
+import com.hansson.shithead.rr.FaceDownRequest;
+import com.hansson.shithead.rr.GameStateRequest;
+import com.hansson.shithead.rr.GameStateResponse;
+import com.hansson.shithead.rr.MoveRequest;
+import com.hansson.shithead.rr.MoveResponse;
+import com.hansson.shithead.rr.ResponseStatus;
+import com.hansson.shithead.rr.SwitchingDoneRequest;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
 
@@ -264,11 +262,11 @@ public class GameActivity extends GCMActivity {
 				if (gcmMessage.getGameId().equals(mGame.getId())) {
 					for (Opponent opponent : mGame.getOpponents()) {
 						if (opponent.getUsername().equals(mGame.getCurrentPlayer())) {
-							if (gcmMessage.getGameEvent() == Event.EXPLODE || gcmMessage.getGameEvent() == Event.FOUR) {
+							if (gcmMessage.getGameEvent() == MoveResponse.Event.EXPLODE || gcmMessage.getGameEvent() == MoveResponse.Event.FOUR) {
 								mGame.getPile().clear();
-							} else if (gcmMessage.getGameEvent() == Event.NONE) {
+							} else if (gcmMessage.getGameEvent() == MoveResponse.Event.NONE) {
 								mGame.getPile().addAll(gcmMessage.getPlayerMove());
-							} else if (gcmMessage.getGameEvent() == Event.PILE) {
+							} else if (gcmMessage.getGameEvent() == MoveResponse.Event.PILE) {
 								opponent.setOnHand(mGame.getPile().size() + 1);
 								mGame.getPile().clear();
 							}
@@ -286,14 +284,14 @@ public class GameActivity extends GCMActivity {
 					for (Opponent opponent : mGame.getOpponents()) {
 						if (opponent.getUsername().equals(mGame.getCurrentPlayer())) {
 							opponent.setFaceDown(opponent.getFaceDown() - 1);
-							if (gcmMessage.getGameEvent() == Event.EXPLODE || gcmMessage.getGameEvent() == Event.FOUR) {
+							if (gcmMessage.getGameEvent() == MoveResponse.Event.EXPLODE || gcmMessage.getGameEvent() == MoveResponse.Event.FOUR) {
 								mGame.getPile().clear();
-							} else if (gcmMessage.getGameEvent() == Event.NONE) {
+							} else if (gcmMessage.getGameEvent() == MoveResponse.Event.NONE) {
 								mGame.getPile().add(gcmMessage.getFaceDownCard());
-							} else if (gcmMessage.getGameEvent() == Event.PILE) {
+							} else if (gcmMessage.getGameEvent() == MoveResponse.Event.PILE) {
 								opponent.setOnHand(mGame.getPile().size() + 1);
 								mGame.getPile().clear();
-							} else if (gcmMessage.getGameEvent() == Event.CHANCE) {
+							} else if (gcmMessage.getGameEvent() == MoveResponse.Event.CHANCE) {
 								mGame.setDeckSize(mGame.getDeckSize() - 1);
 							}
 							mGame.setCurrentPlayer(gcmMessage.getNextPlayer());
@@ -624,9 +622,9 @@ public class GameActivity extends GCMActivity {
 						mGame.setFaceDown(mGame.getFaceDown() - 1);
 						mPlay.clear();
 						mGame.setCurrentPlayer(response.getNextPlayer());
-						if (response.getGameEvent() == Event.NONE) {
+						if (response.getGameEvent() == MoveResponse.Event.NONE) {
 							mGame.getPile().addAll(response.getNewCards());
-						} else if (response.getGameEvent() == Event.PILE) {
+						} else if (response.getGameEvent() == MoveResponse.Event.PILE) {
 							mGame.getPile().clear();
 							mGame.getHand().addAll(response.getNewCards());
 							// getNewCards[0] should be the face down card
@@ -652,7 +650,7 @@ public class GameActivity extends GCMActivity {
 
 		@Override
 		protected String doInBackground(Void... params) {
-			MoveRequest request = new MoveRequest(MoveType.CHANCE);
+			MoveRequest request = new MoveRequest(MoveRequest.MoveType.CHANCE);
 			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
 			request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
 			request.setGameId(mGame.getId());
@@ -697,7 +695,7 @@ public class GameActivity extends GCMActivity {
 
 		@Override
 		protected String doInBackground(Void... params) {
-			MoveRequest request = new MoveRequest(MoveType.PILE);
+			MoveRequest request = new MoveRequest(MoveRequest.MoveType.PILE);
 			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
 			request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
 			request.setGameId(mGame.getId());
@@ -739,7 +737,7 @@ public class GameActivity extends GCMActivity {
 
 		@Override
 		protected String doInBackground(Void... params) {
-			MoveRequest request = new MoveRequest(MoveType.MOVE);
+			MoveRequest request = new MoveRequest(MoveRequest.MoveType.MOVE);
 			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
 			request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
 			request.setGameId(mGame.getId());
@@ -763,9 +761,9 @@ public class GameActivity extends GCMActivity {
 						Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();
 					} else if (fromJson.getStatus() == ResponseStatus.OK) {
 						MoveResponse response = gson.fromJson(result, MoveResponse.class);
-						if (response.getGameEvent() == Event.NONE) {
+						if (response.getGameEvent() == MoveResponse.Event.NONE) {
 							handleMoveNoEvent(response);
-						} else if (response.getGameEvent() == Event.FOUR || response.getGameEvent() == Event.EXPLODE) {
+						} else if (response.getGameEvent() == MoveResponse.Event.FOUR || response.getGameEvent() == MoveResponse.Event.EXPLODE) {
 							handleMoveFourOrExplode(response);
 						}
 						if (mGame.getHand().size() == 0 && mGame.getFaceUp().size() == 0 && mGame.getFaceDown() == 0) {
