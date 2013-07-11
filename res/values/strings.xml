@@ -34,6 +34,7 @@
     <string name="last_move">Last move:</string>
     <string name="current_player">Current Player:</string>
     <string name="in_game_queue">You are now queued for a game. You will be notified when it is ready for you.</string>
+    <string name="friend_added">Friend request sent!</string>
 
     <!-- RULES -->
     <string name="dealing">Dealing the cards</string>

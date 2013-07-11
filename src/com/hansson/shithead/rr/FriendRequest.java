@@ -1,6 +1,6 @@
 package com.hansson.shithead.rr;
 
-public class AcceptFriendRequest extends BasicRequest {
+public class FriendRequest extends BasicRequest {
 
 	private String mFriendUsername;
 
