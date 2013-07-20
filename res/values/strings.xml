@@ -78,5 +78,7 @@
     <string name="not_activated">User not activated, please try again in a few minutes!</string>
     <string name="error_switching">Error executing switching command, please try again!</string>
     <string name="not_your_turn">It is not your turn! Please wait for the other players!</string>
+    <string name="invalid_friend">Invalid friend username!</string>
+    <string name="friend_removed">Friend successfully removed!</string>
 
 </resources>
