@@ -80,5 +80,6 @@
     <string name="not_your_turn">It is not your turn! Please wait for the other players!</string>
     <string name="invalid_friend">Invalid friend username!</string>
     <string name="friend_removed">Friend successfully removed!</string>
+    <string name="friend_already_added">Friend already added!</string>
 
 </resources>

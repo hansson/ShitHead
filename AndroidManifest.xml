@@ -63,6 +63,12 @@
             android:screenOrientation="portrait" >
         </activity>
 
+        <activity
+                android:name="com.hansson.shithead.activities.FriendsActivity"
+                android:label="@string/app_name"
+                android:screenOrientation="portrait" >
+        </activity>
+
         <receiver 
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >

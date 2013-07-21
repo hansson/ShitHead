@@ -28,7 +28,7 @@ public class FriendsActivity extends GCMActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.friends);
-        findViewById(R.id.accept_friend).setOnClickListener(new L_AddFriend());
+        findViewById(R.id.add_friend).setOnClickListener(new L_AddFriend());
         super.onCreate(savedInstanceState);
     }
 
@@ -172,6 +172,8 @@ public class FriendsActivity extends GCMActivity {
                         Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.NOT_OK) {
                         Toast.makeText(mContext, R.string.invalid_friend, Toast.LENGTH_LONG).show();
+                    } else if (fromJson.getStatus() == ResponseStatus.FRIEND_EXISTS) {
+                        Toast.makeText(mContext, R.string.friend_already_added, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
