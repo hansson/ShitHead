@@ -3,4 +3,5 @@
     <item name="password" type="id"/>
     <item name="password2" type="id" />
     <item name="email" type="id" />
+    <item name="quick" type="id" />
 </resources>

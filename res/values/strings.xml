@@ -70,7 +70,7 @@
     <string name="all_fields_mandatory">All the input fields are mandatory!</string>
     <string name="invalid_activation_key">Invalid activation key, please contact support!</string>
     <string name="invalid_credentials">Invalid username or password!</string>
-    <string name="invalid_session">Invalid request information, please relogin to the application!</string>
+    <string name="invalid_session">Invalid session information, please redo the login!</string>
     <string name="invalid_game">Error getting game state, please try again!</string>
     <string name="invalid_move">Invalid move!</string>
     <string name="invalid_chance">You have already taken a chance card!</string>
