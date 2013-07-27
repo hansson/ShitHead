@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:background="@drawable/avatar"
+        android:layout_centerVertical="true"
         android:contentDescription="@string/avatar" />
 
     <TextView

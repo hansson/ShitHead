@@ -34,6 +34,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/card"
+                android:background="@drawable/std"
+                android:padding="10dp"
+                android:layout_margin="5dp"
                 android:width="0dp"/>
 
         <Button
@@ -42,6 +45,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/card"
+                android:background="@drawable/std"
+                android:padding="10dp"
+                android:layout_margin="5dp"
                 android:width="0dp"/>
 
         <Button
@@ -50,6 +56,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/card"
+                android:background="@drawable/std"
+                android:padding="10dp"
+                android:layout_margin="5dp"
                 android:width="0dp"/>
     </LinearLayout>
 

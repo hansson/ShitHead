@@ -1,11 +1,5 @@
 package com.hansson.shithead.activities;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -46,6 +40,12 @@ import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.rr.SwitchingDoneRequest;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class GameActivity extends GCMActivity {
 

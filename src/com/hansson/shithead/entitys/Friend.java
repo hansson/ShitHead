@@ -29,4 +29,15 @@ public class Friend {
 	public void setAvatar(String avatar) {
 		mAvatar = avatar;
 	}
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof  Friend) {
+            Friend that = (Friend) o;
+            if(that.mUsername.equals(this.mUsername)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

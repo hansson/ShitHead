@@ -1,7 +1,5 @@
 package com.hansson.shithead.activities;
 
-import com.hansson.shithead.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,6 +12,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.hansson.shithead.R;
 import com.hansson.shithead.rr.BasicResponse;
 import com.hansson.shithead.rr.RegistrationRequest;
 import com.hansson.shithead.rr.ResponseStatus;

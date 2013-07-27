@@ -15,7 +15,6 @@
  */
 package com.hansson.shithead;
 
-import static com.hansson.shithead.CommonUtilities.displayMessage;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -23,6 +22,8 @@ import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 import com.hansson.shithead.util.HiddenConstants;
+
+import static com.hansson.shithead.CommonUtilities.displayMessage;
 
 /**
  * IntentService responsible for handling GCM messages.

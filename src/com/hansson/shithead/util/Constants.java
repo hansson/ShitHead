@@ -1,9 +1,9 @@
 package com.hansson.shithead.util;
 
+import com.hansson.shithead.R;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.hansson.shithead.R;
 
 public class Constants {
 
@@ -19,6 +19,7 @@ public class Constants {
 	public static final String CONNECTION_ERROR = "Connection error";
 	public static final String LOG_TAG = "SHH_TAG";
 	public static final int REGISTER_ACTIVITY_CODE = 0x1111;
+	public static final int INVITE_FRIEND_RETURN_OK = 0x1112;
 	// Maps containing card drawables and corresponding string
 	public static final Map<String, Integer> CARD_MAP = new HashMap<String, Integer>();
 	static {

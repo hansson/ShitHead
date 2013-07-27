@@ -1,8 +1,8 @@
 package com.hansson.shithead.activities;
 
-import com.hansson.shithead.R;
-
 import android.os.Bundle;
+
+import com.hansson.shithead.R;
 
 public class HowToPlayActivity extends GCMActivity {
 

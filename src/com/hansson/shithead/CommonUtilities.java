@@ -54,4 +54,5 @@ public final class CommonUtilities {
 		intent.putExtra(EXTRA_MESSAGE, message);
 		context.sendBroadcast(intent);
 	}
+
 }

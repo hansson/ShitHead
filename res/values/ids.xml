@@ -4,4 +4,8 @@
     <item name="password2" type="id" />
     <item name="email" type="id" />
     <item name="quick" type="id" />
+    <item name="how_to_play" type="id" />
+    <item name="bottom_container" type="id" />
+    <item name="custom" type="id" />
+
 </resources>

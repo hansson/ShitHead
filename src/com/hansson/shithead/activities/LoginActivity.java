@@ -1,6 +1,5 @@
 package com.hansson.shithead.activities;
 
-import static com.hansson.shithead.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -27,6 +26,8 @@ import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
 import com.hansson.shithead.util.Hash;
 import com.hansson.shithead.util.HiddenConstants;
+
+import static com.hansson.shithead.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 
 public class LoginActivity extends Activity {
 

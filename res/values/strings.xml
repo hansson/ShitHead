@@ -81,5 +81,7 @@
     <string name="invalid_friend">Invalid friend username!</string>
     <string name="friend_removed">Friend successfully removed!</string>
     <string name="friend_already_added">Friend already added!</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="choose_friends">Choose up to 3 friends</string>
 
 </resources>

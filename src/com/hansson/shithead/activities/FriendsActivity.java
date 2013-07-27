@@ -15,9 +15,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.hansson.shithead.R;
 import com.hansson.shithead.entitys.Friend;
-import com.hansson.shithead.rr.FriendRequest;
 import com.hansson.shithead.rr.BasicRequest;
 import com.hansson.shithead.rr.BasicResponse;
+import com.hansson.shithead.rr.FriendRequest;
 import com.hansson.shithead.rr.FriendResponse;
 import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.util.Constants;
@@ -51,6 +51,15 @@ public class FriendsActivity extends GCMActivity {
         removeFriend.setOnClickListener(new L_RemoveFriend(friend));
     }
 
+    private void populateAcceptFriendView(Friend friend, RelativeLayout view) {
+        TextView friendName = (TextView) view.findViewById(R.id.friend_name);
+        friendName.setText(friend.getUsername());
+        ImageView acceptFriend = (ImageView) view.findViewById(R.id.accept_friend);
+        acceptFriend.setOnClickListener(new L_AcceptFriend(friend));
+        ImageView denyFriend = (ImageView) view.findViewById(R.id.deny_friend);
+        denyFriend.setOnClickListener(new L_RemoveFriend(friend));
+    }
+
     private class AT_ListFriends extends AsyncTask<Void, Void, String> {
 
         @Override
@@ -82,12 +91,7 @@ public class FriendsActivity extends GCMActivity {
                                 friendContainer.addView(inflate);
                             } else {
                                 RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.accept_friend, null);
-                                TextView friendName = (TextView) inflate.findViewById(R.id.friend_name);
-                                friendName.setText(friend.getUsername());
-                                ImageView acceptFriend = (ImageView) inflate.findViewById(R.id.accept_friend);
-                                acceptFriend.setOnClickListener(new L_AcceptFriend(friend));
-                                ImageView denyFriend = (ImageView) inflate.findViewById(R.id.deny_friend);
-                                denyFriend.setOnClickListener(new L_RemoveFriend(friend));
+                                populateAcceptFriendView(friend, inflate);
                                 pendingFriendContainer.addView(inflate);
                             }
                         }
@@ -101,6 +105,7 @@ public class FriendsActivity extends GCMActivity {
             }
         }
     }
+
 
     private class AT_AcceptFriend extends AsyncTask<Object, Void, Object[]> {
 

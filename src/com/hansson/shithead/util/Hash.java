@@ -1,9 +1,9 @@
 package com.hansson.shithead.util;
 
+import android.util.Log;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import android.util.Log;
 
 public class Hash {
 

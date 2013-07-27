@@ -15,7 +15,9 @@
  */
 package com.hansson.shithead;
 
-import static com.hansson.shithead.CommonUtilities.SERVER_URL;
+import android.content.Context;
+
+import com.google.android.gcm.GCMRegistrar;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,9 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import android.content.Context;
-
-import com.google.android.gcm.GCMRegistrar;
+import static com.hansson.shithead.CommonUtilities.SERVER_URL;
 
 /**
  * Helper class used to communicate with the demo server.

@@ -1,23 +1,39 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
-    android:paddingTop="30dp" >
-    
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/choose_opponents"/>
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              android:paddingTop="30dp">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_opponents"
+            android:layout_marginBottom="15dp"/>
 
     <Button
-        android:id="@+id/random"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="randomQuickGameListener"
-        android:text="@string/random" />
- 
+            android:id="@+id/random"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="randomQuickGameListener"
+            android:text="@string/random"
+            android:background="@drawable/std"
+            android:padding="15dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"/>
+
+    <Button
+            android:id="@+id/friends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="friendsQuickGameListener"
+            android:text="@string/invite_friends"
+            android:background="@drawable/std"
+            android:padding="15dp"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"/>
+
 
 </LinearLayout>

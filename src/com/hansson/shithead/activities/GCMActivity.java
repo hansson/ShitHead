@@ -1,10 +1,5 @@
 package com.hansson.shithead.activities;
 
-import static com.hansson.shithead.CommonUtilities.DISPLAY_MESSAGE_ACTION;
-import static com.hansson.shithead.CommonUtilities.EXTRA_MESSAGE;
-
-import com.hansson.shithead.R;
-
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -19,7 +14,11 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import com.google.android.gcm.GCMRegistrar;
+import com.hansson.shithead.R;
 import com.hansson.shithead.util.Constants;
+
+import static com.hansson.shithead.CommonUtilities.DISPLAY_MESSAGE_ACTION;
+import static com.hansson.shithead.CommonUtilities.EXTRA_MESSAGE;
 
 public abstract class GCMActivity extends Activity {
 

@@ -22,7 +22,8 @@
     <application
             android:allowBackup="true"
             android:icon="@drawable/ic_launcher"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme">
 
         <activity
                 android:name="com.hansson.shithead.activities.LoginActivity"
@@ -62,6 +63,12 @@
 
         <activity
                 android:name="com.hansson.shithead.activities.FriendsActivity"
+                android:label="@string/app_name"
+                android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+                android:name="com.hansson.shithead.activities.QuickGameFriendsActivity"
                 android:label="@string/app_name"
                 android:screenOrientation="portrait">
         </activity>

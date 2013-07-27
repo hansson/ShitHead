@@ -1,17 +1,16 @@
 package com.hansson.shithead.entitys;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.hansson.shithead.entitys.BaseEntity;
 import com.hansson.shithead.gcm.GCMPlayerMoveFaceDown;
 import com.hansson.shithead.rr.FaceDownRequest;
 import com.hansson.shithead.rr.GameStateResponse;
 import com.hansson.shithead.rr.MoveRequest;
 import com.hansson.shithead.rr.MoveResponse;
 import com.hansson.shithead.rr.ResponseStatus;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class will handle the main game logic.
