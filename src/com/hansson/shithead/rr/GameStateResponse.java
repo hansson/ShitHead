@@ -29,6 +29,7 @@ public class GameStateResponse extends BasicResponse implements Serializable {
 	private int mDeckSize;
 	private int mPosition;
 	private boolean mFinished;
+    private boolean mAccepted;
 
 	public GameStateResponse() {
 	}
@@ -168,4 +169,12 @@ public class GameStateResponse extends BasicResponse implements Serializable {
 	public void setFinished(boolean finished) {
 		mFinished = finished;
 	}
+
+    public boolean isAccepted() {
+        return mAccepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        mAccepted = accepted;
+    }
 }

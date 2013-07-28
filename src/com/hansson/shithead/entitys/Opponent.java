@@ -15,6 +15,7 @@ public class Opponent implements Serializable {
 	private int mOnHand;
 	private int mFaceDown;
 	private int mPosition;
+    private boolean mAccepted;
 
 	public int getFaceDown() {
 		return mFaceDown;
@@ -58,4 +59,12 @@ public class Opponent implements Serializable {
 	public void setPosition(int position) {
 		mPosition = position;
 	}
+
+    public boolean isAccepted() {
+        return mAccepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        mAccepted = accepted;
+    }
 }

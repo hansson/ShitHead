@@ -12,10 +12,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hansson.shithead.R;
 import com.hansson.shithead.entitys.Friend;
 import com.hansson.shithead.rr.BasicRequest;
+import com.hansson.shithead.rr.BasicResponse;
 import com.hansson.shithead.rr.FriendResponse;
+import com.hansson.shithead.rr.InviteFriendRequest;
 import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.util.Constants;
 import com.hansson.shithead.util.GsonOperator;
@@ -25,7 +28,7 @@ import java.util.List;
 
 public class QuickGameFriendsActivity extends GCMActivity {
 
-    private List<Friend> mFriendList;
+    private List<String> mFriendList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,8 @@ public class QuickGameFriendsActivity extends GCMActivity {
     }
 
     public void startGameListener(View v) {
+        CheckBox privateGame = (CheckBox) findViewById(R.id.private_game);
+        new AT_InviteFriends().execute(mFriendList, privateGame.isChecked());
         unregisterReceiver(mHandleMessageReceiver);
         mIsRegistered = false;
         setResult(Constants.INVITE_FRIEND_RETURN_OK);
@@ -67,7 +72,7 @@ public class QuickGameFriendsActivity extends GCMActivity {
                     Gson gson = new Gson();
                     FriendResponse fromJson = gson.fromJson(result, FriendResponse.class);
                     if (fromJson.getStatus() == ResponseStatus.OK) {
-                        mFriendList = new LinkedList<Friend>();
+                        mFriendList = new LinkedList<String>();
                         LinearLayout friendContainer = (LinearLayout) findViewById(R.id.friend_container);
                         friendContainer.removeAllViews();
                         for (Friend friend : fromJson.getFriends()) {
@@ -95,6 +100,40 @@ public class QuickGameFriendsActivity extends GCMActivity {
         }
     }
 
+    private class AT_InviteFriends extends AsyncTask<Object, Void, String> {
+
+        @Override
+        protected String doInBackground(Object... params) {
+            InviteFriendRequest request = new InviteFriendRequest();
+            SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
+            request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
+            request.setFriends((List<String>)params[0]);
+            request.setPrivateGame((Boolean)params[1]);
+            return GsonOperator.sendAndRecieveGson(request, "find/invite");
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                if (result.equals(Constants.CONNECTION_ERROR)) {
+                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                } else {
+                    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
+                    BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);
+                    if (fromJson.getStatus() == ResponseStatus.OK) {
+                        Toast.makeText(mContext, R.string.in_game_queue, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                    }
+                }
+            } catch (Exception e) {
+                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     private class L_HandleCheckFriend implements CompoundButton.OnCheckedChangeListener {
         private Friend mFriend;
         public L_HandleCheckFriend(Friend friend) {
@@ -104,9 +143,9 @@ public class QuickGameFriendsActivity extends GCMActivity {
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             if(b && mFriendList.size() < 3)  {
-                mFriendList.add(mFriend);
+                mFriendList.add(mFriend.getUsername());
             } else if(!b) {
-                mFriendList.remove(mFriend);
+                mFriendList.remove(mFriend.getUsername());
             }
         }
     }

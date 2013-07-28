@@ -83,5 +83,6 @@
     <string name="friend_already_added">Friend already added!</string>
     <string name="invite_friends">Invite friends</string>
     <string name="choose_friends">Choose up to 3 friends</string>
+    <string name="private_game">Private game</string>
 
 </resources>
