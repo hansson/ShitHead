@@ -22,7 +22,7 @@
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/password"
+            android:layout_alignRight="@id/password"
             android:layout_alignParentBottom="true"
             android:onClick="loginListener"
             android:background="@drawable/std"
@@ -32,17 +32,17 @@
             android:padding="10dp"
             android:text="@string/login"/>
 
-    <Button
-            android:id="@+id/register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/login"
-            android:layout_toRightOf="@id/login"
-            android:onClick="registerListener"
-            android:background="@drawable/std"
-            android:textColor="@color/white"
-            android:padding="10dp"
-            android:text="@string/register"/>
+    <!--<Button-->
+    <!--android:id="@+id/register"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_alignBaseline="@id/login"-->
+    <!--android:layout_toRightOf="@id/login"-->
+    <!--android:onClick="registerListener"-->
+    <!--android:background="@drawable/std"-->
+    <!--android:textColor="@color/white"-->
+    <!--android:padding="10dp"-->
+    <!--android:text="@string/register"/>-->
 
     <EditText
             android:id="@+id/password"
@@ -72,9 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:layout_alignBaseline="@+id/register"
-            android:layout_alignBottom="@+id/register"
-            android:layout_alignRight="@+id/password"
+            align
             android:text="@string/auto_login"/>
 
 </RelativeLayout>
