@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/card"
+                android:text="@string/game_card"
                 android:background="@drawable/std"
                 android:padding="10dp"
                 android:layout_margin="5dp"
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/card"
+                android:text="@string/game_card"
                 android:background="@drawable/std"
                 android:padding="10dp"
                 android:layout_margin="5dp"
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/card"
+                android:text="@string/game_card"
                 android:background="@drawable/std"
                 android:padding="10dp"
                 android:layout_margin="5dp"
@@ -191,14 +191,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:contentDescription="@string/card"
+                android:contentDescription="@string/game_card"
                 android:src="@drawable/back_card"/>
 
         <ImageView
                 android:id="@+id/pile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/card"
+                android:contentDescription="@string/game_card"
                 android:src="@drawable/placeholder_1_card"/>
     </LinearLayout>
 

@@ -7,7 +7,7 @@
         android:id="@+id/card"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/card" />
+        android:contentDescription="@string/game_card" />
 
     <TextView
         android:id="@+id/amount"

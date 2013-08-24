@@ -8,23 +8,13 @@
             android:id="@+id/game_started"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black"/>
 
     <TextView
-            android:id="@+id/last_move"
+            android:id="@+id/time_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/game_started"
-            android:textColor="@color/black"
-            />
-
-    <TextView
-            android:id="@+id/current_player"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/last_move"
-            android:textColor="@color/black"
-            />
+            android:layout_alignParentRight="true"
+            android:textColor="@color/black"/>
 
 </RelativeLayout>

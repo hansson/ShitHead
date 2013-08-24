@@ -13,31 +13,112 @@
             android:indeterminateOnly="true"
             android:visibility="gone"/>
 
+    <Button
+            android:id="@+id/start_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="startGameListener"
+            android:text="@string/menu_start_game"
+            android:textSize="18sp"
+            android:background="@drawable/std"
+            android:padding="15dp"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginLeft="@dimen/medium_margin"
+            android:layout_marginRight="@dimen/medium_margin"/>
+
+    <Button
+            android:id="@+id/queue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_queue_size"
+            android:textSize="18sp"
+            android:background="@drawable/std"
+            android:layout_below="@id/start_game"
+            android:padding="15dp"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginLeft="@dimen/medium_margin"
+            android:layout_marginRight="@dimen/medium_margin"/>
+
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:layout_alignParentTop="true"
-            android:layout_above="@id/quick"
-            >
+            android:layout_below="@id/queue"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginLeft="@dimen/medium_margin"
+            android:layout_marginRight="@dimen/medium_margin">
 
-        <TextView
-                android:id="@+id/active_games_txt"
+
+        <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:textColor="@color/black"
-                android:layout_marginTop="8dp"
-                android:text="@string/active_games"/>
+                android:orientation="horizontal"
+                android:weightSum="2"
+                >
+
+            <TextView
+                    android:id="@+id/your_turn_txt"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/menu_your_turn"
+                    android:layout_width="wrap_content"/>
+
+            <TextView
+                    android:id="@+id/your_turn_time_txt"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/menu_time_left"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"/>
+
+        </RelativeLayout>
 
         <ScrollView
-                android:id="@+id/active_games_scroll"
+                android:id="@+id/your_turn_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
             <LinearLayout
-                    android:id="@+id/active_games"
+                    android:id="@+id/your_turn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+            </LinearLayout>
+        </ScrollView>
+
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+            <TextView
+                    android:id="@+id/opponent_turn_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textColor="@color/black"
+                    android:text="@string/menu_opponent_turn"/>
+
+            <TextView
+                    android:id="@+id/opponent_turn_time_txt"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/menu_time_left"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"/>
+
+        </RelativeLayout>
+
+        <ScrollView
+                android:id="@+id/opponent_turn_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <LinearLayout
+                    android:id="@+id/opponent_turn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -46,22 +127,6 @@
 
 
     </LinearLayout>
-
-
-    <Button
-            android:id="@+id/quick"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="quickGameListener"
-            android:text="@string/quick_game"
-            android:textSize="18sp"
-            android:background="@drawable/std"
-            android:padding="15dp"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:layout_marginLeft="@dimen/medium_margin"
-            android:layout_marginRight="@dimen/medium_margin"/>
-
-
 
 
 </RelativeLayout>

@@ -67,7 +67,7 @@ public class FriendsActivity extends GCMActivity {
             BasicRequest request = new BasicRequest();
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
-            return GsonOperator.sendAndRecieveGson(request, "friends/list");
+            return GsonOperator.sendAndReceiveGson(request, "friends/list");
         }
 
         @Override
@@ -75,7 +75,7 @@ public class FriendsActivity extends GCMActivity {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 if (result.equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new Gson();
                     FriendResponse fromJson = gson.fromJson(result, FriendResponse.class);
@@ -96,11 +96,11 @@ public class FriendsActivity extends GCMActivity {
                             }
                         }
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -115,7 +115,7 @@ public class FriendsActivity extends GCMActivity {
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
             request.setFriendUsername(((Friend) params[0]).getUsername());
-            String sendAndReceiveGson = GsonOperator.sendAndRecieveGson(request, "friends/accept");
+            String sendAndReceiveGson = GsonOperator.sendAndReceiveGson(request, "friends/accept");
             Object[] returnArray = new Object[3];
             returnArray[0] = sendAndReceiveGson;
             returnArray[1] = params[1];
@@ -127,8 +127,8 @@ public class FriendsActivity extends GCMActivity {
         protected void onPostExecute(Object[] result) {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
-                if (((String) result[0]).equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                if (result[0].equals(Constants.CONNECTION_ERROR)) {
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new Gson();
                     BasicResponse fromJson = gson.fromJson((String) result[0], BasicResponse.class);
@@ -140,11 +140,11 @@ public class FriendsActivity extends GCMActivity {
                         populateFriendView((Friend) result[2], inflate);
                         friendContainer.addView(inflate);
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -158,31 +158,31 @@ public class FriendsActivity extends GCMActivity {
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
             request.setFriendUsername(params[0]);
-            return GsonOperator.sendAndRecieveGson(request, "friends/add");
+            return GsonOperator.sendAndReceiveGson(request, "friends/add");
         }
 
         @Override
         protected void onPostExecute(String result) {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
-                if (((String) result).equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                if (result.equals(Constants.CONNECTION_ERROR)) {
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new Gson();
-                    BasicResponse fromJson = gson.fromJson((String) result, BasicResponse.class);
+                    BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);
                     if (fromJson.getStatus() == ResponseStatus.OK) {
-                        Toast.makeText(mContext, R.string.friend_added, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.menu_friend_added, Toast.LENGTH_LONG).show();
                         new AT_ListFriends().execute();
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.NOT_OK) {
-                        Toast.makeText(mContext, R.string.invalid_friend, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_friend, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.FRIEND_EXISTS) {
-                        Toast.makeText(mContext, R.string.friend_already_added, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_friend_already_added, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -196,29 +196,29 @@ public class FriendsActivity extends GCMActivity {
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
             request.setFriendUsername(params[0]);
-            return GsonOperator.sendAndRecieveGson(request, "friends/remove");
+            return GsonOperator.sendAndReceiveGson(request, "friends/remove");
         }
 
         @Override
         protected void onPostExecute(String result) {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
-                if (((String) result).equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                if (result.equals(Constants.CONNECTION_ERROR)) {
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new Gson();
-                    BasicResponse fromJson = gson.fromJson((String) result, BasicResponse.class);
+                    BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);
                     if (fromJson.getStatus() == ResponseStatus.OK) {
-                        Toast.makeText(mContext, R.string.friend_removed, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_friend_removed, Toast.LENGTH_LONG).show();
                         new AT_ListFriends().execute();
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.NOT_OK) {
-                        Toast.makeText(mContext, R.string.invalid_friend, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_friend, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }

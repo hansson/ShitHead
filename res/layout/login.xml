@@ -30,7 +30,7 @@
             android:layout_marginBottom="2dp"
             android:textColor="@color/white"
             android:padding="10dp"
-            android:text="@string/login"/>
+            android:text="@string/login_login"/>
 
     <TextView
             android:id="@+id/register"
@@ -41,7 +41,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             android:paddingBottom="5dp"
-            android:text="@string/register"/>
+            android:text="@string/login_register"/>
 
     <EditText
             android:id="@+id/password"
@@ -50,7 +50,7 @@
             android:layout_above="@id/login"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="5dp"
-            android:hint="@string/password"
+            android:hint="@string/login_password"
             android:inputType="textPassword"/>
 
     <EditText
@@ -60,7 +60,7 @@
             android:layout_above="@id/password"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
-            android:hint="@string/username"
+            android:hint="@string/login_username"
             android:inputType="text">
 
         <requestFocus/>
@@ -72,6 +72,6 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:layout_alignParentBottom="true"
-            android:text="@string/auto_login"/>
+            android:text="@string/login_auto_login"/>
 
 </RelativeLayout>

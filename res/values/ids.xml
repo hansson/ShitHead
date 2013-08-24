@@ -7,5 +7,6 @@
     <item name="how_to_play" type="id" />
     <item name="bottom_container" type="id" />
     <item name="custom" type="id" />
+    <item name="username" type="id" />
 
 </resources>

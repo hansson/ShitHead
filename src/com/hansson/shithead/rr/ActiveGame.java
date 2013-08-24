@@ -4,40 +4,50 @@ import java.util.Date;
 
 public class ActiveGame {
 
-	private Date mStartedAt;
-	private String mGameId;
-	private String mCurrentPlayerName;
-	private Date mLastMove;
+    private Date mStartedAt;
+    private String mGameId;
+    private String mCurrentPlayerName;
+    private Date mLastMove;
+    private int mRoundLength;
 
-	public Date getStartedAt() {
-		return mStartedAt;
-	}
+    public Date getStartedAt() {
+        return mStartedAt;
+    }
 
-	public void setStartedAt(Date startedAt) {
-		mStartedAt = startedAt;
-	}
+    public void setStartedAt(Date startedAt) {
+        mStartedAt = startedAt;
+    }
 
-	public String getGameId() {
-		return mGameId;
-	}
+    public String getGameId() {
+        return mGameId;
+    }
 
-	public void setGameId(String id) {
-		mGameId = id;
-	}
+    public void setGameId(String id) {
+        mGameId = id;
+    }
 
-	public String getCurrentPlayerName() {
-		return mCurrentPlayerName;
-	}
+    public String getCurrentPlayerName() {
+        return mCurrentPlayerName;
+    }
 
-	public void setCurrentPlayerName(String currentPlayerName) {
-		mCurrentPlayerName = currentPlayerName;
-	}
+    public void setCurrentPlayerName(String currentPlayerName) {
+        mCurrentPlayerName = currentPlayerName;
+    }
 
-	public void setLastMove(Date lastUpdate) {
-		mLastMove = lastUpdate;
-	}
+    public void setLastMove(Date lastUpdate) {
+        mLastMove = lastUpdate;
+    }
 
-	public Date getLastMove() {
-		return mLastMove;
-	}
+    public Date getLastMove() {
+        return mLastMove;
+    }
+
+    public int getRoundLength() {
+        return mRoundLength;
+    }
+
+    public void setRoundLength(int roundLength) {
+        mRoundLength = roundLength;
+    }
+
 }

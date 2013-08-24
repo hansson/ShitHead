@@ -14,13 +14,7 @@
             <version>2.2.1</version>
             <scope>provided</scope>
         </dependency>
-        
-		<!-- SAF SHARED DEPENDENCY -->
-		<dependency>
-		    <groupId>com.hansson</groupId>
-		    <artifactId>sh_shared</artifactId>
-		    <version>1.0</version>
-		</dependency>
+
     </dependencies>
     <build> 
         <finalName>${project.artifactId}</finalName>

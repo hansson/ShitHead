@@ -8,7 +8,6 @@ public class Card implements Comparable<Card>, Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4362768273313554273L;
-	public static final Suit SUITS[] = { Suit.HEARTS, Suit.DIAMONDS, Suit.CLUBS, Suit.SPADES };
 	private int mValue;
 	private int mSuit;
 
@@ -17,14 +16,6 @@ public class Card implements Comparable<Card>, Serializable {
 
 	public Card(int value, int suit) {
 		mValue = value;
-		mSuit = suit;
-	}
-
-	public int getSuit() {
-		return mSuit;
-	}
-
-	public void setSuit(int suit) {
 		mSuit = suit;
 	}
 
@@ -38,15 +29,15 @@ public class Card implements Comparable<Card>, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		try {
+        if(obj instanceof Card) {
 			Card that = (Card) obj;
 			if (that.mValue == this.mValue && that.mSuit == this.mSuit) {
 				return true;
 			}
-			return false;
-		} catch (Exception e) {
-			return false;
-		}
+        }
+		return false;
+
+
 	}
 
 	@Override

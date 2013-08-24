@@ -180,12 +180,12 @@ public class GameActivity extends GCMActivity {
         // Initiate button mode Playing/Switching
         if (mGame.isSwitching()) {
             Button done = (Button) findViewById(R.id.button1);
-            done.setText(R.string.done);
+            done.setText(R.string.game_done);
             done.setOnClickListener(new L_DoneSwitching());
             Button none = (Button) findViewById(R.id.button2);
             none.setVisibility(View.INVISIBLE);
             Button switchCards = (Button) findViewById(R.id.button3);
-            switchCards.setText(R.string.switch_card);
+            switchCards.setText(R.string.game_switch_card);
             switchCards.setOnClickListener(new L_SwitchCards());
             if (!mGame.isPlayerSwitching()) {
                 done.setEnabled(false);
@@ -194,15 +194,15 @@ public class GameActivity extends GCMActivity {
         } else {
             Button play = (Button) findViewById(R.id.button1);
             play.setEnabled(true);
-            play.setText(R.string.play);
+            play.setText(R.string.game_play);
             play.setOnClickListener(new L_Play());
             Button chance = (Button) findViewById(R.id.button2);
             chance.setVisibility(View.VISIBLE);
             chance.setOnClickListener(new L_Chance());
-            chance.setText(R.string.chance);
+            chance.setText(R.string.game_chance);
             Button pileButton = (Button) findViewById(R.id.button3);
             pileButton.setEnabled(true);
-            pileButton.setText(R.string.pile);
+            pileButton.setText(R.string.game_pile);
             pileButton.setOnClickListener(new L_Pile());
         }
     }
@@ -412,7 +412,7 @@ public class GameActivity extends GCMActivity {
             if (!mGame.isFinished() && mGame.getPile().size() != 0) {
                 new AT_TakePile().execute();
             } else {
-                Toast.makeText(mContext, R.string.not_pile, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.game_not_pile, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -424,7 +424,7 @@ public class GameActivity extends GCMActivity {
             if (!mGame.isFinished() && checkTakeChance()) {
                 new AT_Chance().execute();
             } else {
-                Toast.makeText(mContext, R.string.not_chance, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.game_not_chance, Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -439,10 +439,10 @@ public class GameActivity extends GCMActivity {
                 if (moveIsValid()) {
                     new AT_SendMove().execute();
                 } else {
-                    Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_invalid_move, Toast.LENGTH_LONG).show();
                 }
             } else {
-                Toast.makeText(mContext, R.string.not_your_turn, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_not_your_turn, Toast.LENGTH_LONG).show();
             }
         }
 
@@ -604,7 +604,7 @@ public class GameActivity extends GCMActivity {
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
             request.setGameId(mGame.getId());
             request.setIndex(params[0]);
-            return GsonOperator.sendAndRecieveGson(request, "move/face-down");
+            return GsonOperator.sendAndReceiveGson(request, "move/face-down");
         }
 
         @Override
@@ -612,14 +612,14 @@ public class GameActivity extends GCMActivity {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 if (result.equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
                     MoveResponse response = gson.fromJson(result, MoveResponse.class);
                     if (response.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (response.getStatus() == ResponseStatus.INVALID_GAME) {
-                        Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_game, Toast.LENGTH_LONG).show();
                     } else if (response.getStatus() == ResponseStatus.OK) {
                         mGame.setFaceDown(mGame.getFaceDown() - 1);
                         mPlay.clear();
@@ -638,11 +638,11 @@ public class GameActivity extends GCMActivity {
                             new AT_UpdateGameState().execute(mGame.getId());
                         }
                     } else if (response.getStatus() == ResponseStatus.NOT_OK) {
-                        Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_move, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -656,7 +656,7 @@ public class GameActivity extends GCMActivity {
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
             request.setGameId(mGame.getId());
-            return GsonOperator.sendAndRecieveGson(request, "move");
+            return GsonOperator.sendAndReceiveGson(request, "move");
         }
 
         @Override
@@ -664,14 +664,14 @@ public class GameActivity extends GCMActivity {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 if (result.equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
                     MoveResponse response = gson.fromJson(result, MoveResponse.class);
                     if (response.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (response.getStatus() == ResponseStatus.INVALID_GAME) {
-                        Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_game, Toast.LENGTH_LONG).show();
                     } else if (response.getStatus() == ResponseStatus.OK) {
                         mGame.getPile().addAll(mPlay);
                         mPlay.clear();
@@ -680,13 +680,13 @@ public class GameActivity extends GCMActivity {
                         }
                         initializeGameBoard();
                     } else if (response.getStatus() == ResponseStatus.CHANCE_TAKEN) {
-                        Toast.makeText(mContext, R.string.invalid_chance, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_chance, Toast.LENGTH_LONG).show();
                     } else if (response.getStatus() == ResponseStatus.NOT_OK) {
-                        Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_move, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -700,7 +700,7 @@ public class GameActivity extends GCMActivity {
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
             request.setGameId(mGame.getId());
-            return GsonOperator.sendAndRecieveGson(request, "move");
+            return GsonOperator.sendAndReceiveGson(request, "move");
         }
 
         @Override
@@ -708,14 +708,14 @@ public class GameActivity extends GCMActivity {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 if (result.equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
                     MoveResponse response = gson.fromJson(result, MoveResponse.class);
                     if (response.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (response.getStatus() == ResponseStatus.INVALID_GAME) {
-                        Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_game, Toast.LENGTH_LONG).show();
                     } else if (response.getStatus() == ResponseStatus.OK) {
                         mGame.getPile().clear();
                         mPlay.clear();
@@ -723,11 +723,11 @@ public class GameActivity extends GCMActivity {
                         mGame.getHand().addAll(response.getNewCards());
                         initializeGameBoard();
                     } else if (response.getStatus() == ResponseStatus.NOT_OK) {
-                        Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_move, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -742,7 +742,7 @@ public class GameActivity extends GCMActivity {
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
             request.setGameId(mGame.getId());
             request.setCards(mPlay);
-            return GsonOperator.sendAndRecieveGson(request, "move");
+            return GsonOperator.sendAndReceiveGson(request, "move");
         }
 
         @Override
@@ -750,14 +750,14 @@ public class GameActivity extends GCMActivity {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 if (result.equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
                     BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);
                     if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_GAME) {
-                        Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_game, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.OK) {
                         MoveResponse response = gson.fromJson(result, MoveResponse.class);
                         if (response.getGameEvent() == MoveResponse.Event.NONE) {
@@ -769,11 +769,11 @@ public class GameActivity extends GCMActivity {
                             new AT_UpdateGameState().execute(mGame.getId());
                         }
                     } else if (fromJson.getStatus() == ResponseStatus.NOT_OK) {
-                        Toast.makeText(mContext, R.string.invalid_move, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_move, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -812,7 +812,7 @@ public class GameActivity extends GCMActivity {
             request.setGameId(mGame.getId());
             request.setFaceUp(mGame.getFaceUp());
             request.setHand(mGame.getHand());
-            return GsonOperator.sendAndRecieveGson(request, "switch");
+            return GsonOperator.sendAndReceiveGson(request, "switch");
         }
 
         @Override
@@ -820,14 +820,14 @@ public class GameActivity extends GCMActivity {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
                 if (result.equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
                     BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);
                     if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_GAME) {
-                        Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_game, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.OK) {
                         findViewById(R.id.button1).setEnabled(false);
                         findViewById(R.id.button3).setEnabled(false);
@@ -836,7 +836,7 @@ public class GameActivity extends GCMActivity {
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }
@@ -850,14 +850,14 @@ public class GameActivity extends GCMActivity {
             request.setGameId(params[0]);
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
-            return GsonOperator.sendAndRecieveGson(request, "game");
+            return GsonOperator.sendAndReceiveGson(request, "game");
         }
 
         @Override
         protected void onPostExecute(String result) {
             try {
                 if (result.equals(Constants.CONNECTION_ERROR)) {
-                    Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
                 } else {
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
                     GameStateResponse fromJson = gson.fromJson(result, GameStateResponse.class);
@@ -865,13 +865,13 @@ public class GameActivity extends GCMActivity {
                         mGame = fromJson;
                         initializeGameBoard();
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
-                        Toast.makeText(mContext, R.string.invalid_session, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_GAME) {
-                        Toast.makeText(mContext, R.string.invalid_game, Toast.LENGTH_LONG).show();
+                        Toast.makeText(mContext, R.string.error_invalid_game, Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
         }

@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
 
 public class GsonOperator {
 
-	public static String sendAndRecieveGson(Object send, String path) {
+	public static String sendAndReceiveGson(Object send, String path) {
 		HttpClient httpclient = new DefaultHttpClient();
 		HttpPost httppost = new HttpPost(Constants.URL + path);
 		try {

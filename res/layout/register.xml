@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/username"
         android:paddingTop="40dp"
-        android:text="@string/register_user"
+        android:text="@string/login_register_user"
         android:textSize="20sp" />
 
     <EditText
@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/email"
-        android:hint="@string/username"
+        android:hint="@string/login_username"
         android:inputType="text" >
 
         <requestFocus />
@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/password"
-        android:hint="@string/email"
+        android:hint="@string/login_email"
         android:inputType="textEmailAddress" />
 
     <EditText
@@ -38,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/password2"
-        android:hint="@string/password"
+        android:hint="@string/login_password"
         android:inputType="textPassword" />
 
     <EditText
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/register"
         android:layout_marginBottom="10dp"
-        android:hint="@string/repeat_password"
+        android:hint="@string/login_repeat_password"
         android:inputType="textPassword" />
 
     <Button
@@ -60,7 +60,7 @@
         android:onClick="registerListener"
         android:background="@drawable/std"
         android:padding="10dp"
-        android:text="@string/register" />
+        android:text="@string/login_register" />
 
     <ProgressBar
         android:id="@+id/progress"

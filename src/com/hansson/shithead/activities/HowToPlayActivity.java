@@ -2,13 +2,11 @@ package com.hansson.shithead.activities;
 
 import android.os.Bundle;
 
-import com.hansson.shithead.R;
-
 public class HowToPlayActivity extends GCMActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		setContentView(R.layout.how_to_play);
+//		setContentView(R.layout.how_to_play);
 		super.onCreate(savedInstanceState);
 	}
 

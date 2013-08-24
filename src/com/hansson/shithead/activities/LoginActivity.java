@@ -130,9 +130,9 @@ public class LoginActivity extends Activity {
 		}
 	}
 
-	private final BroadcastReceiver mHandleMessageReceiver = new ShitHeadLoginBroadcastReciever();
+	private final BroadcastReceiver mHandleMessageReceiver = new ShitHeadLoginBroadcastReceiver();
 
-	private class ShitHeadLoginBroadcastReciever extends BroadcastReceiver {
+	private class ShitHeadLoginBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -147,8 +147,7 @@ public class LoginActivity extends Activity {
 			SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
 			params[0].setRegId(settings.getString(Constants.PREF_REGID, ""));
 			params[0].setVersion("0.15");
-			String sendAndRecieveGson = GsonOperator.sendAndRecieveGson(params[0], "login");
-			return sendAndRecieveGson;
+            return GsonOperator.sendAndReceiveGson(params[0], "login");
 		}
 
 		@Override
@@ -156,7 +155,7 @@ public class LoginActivity extends Activity {
 			try {
 				findViewById(R.id.progress).setVisibility(View.GONE);
 				if (result.equals(Constants.CONNECTION_ERROR)) {
-					Toast.makeText(mContext, R.string.connection_error, Toast.LENGTH_LONG).show();
+					Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
 				} else {
 					Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
 					AuthResponse fromJson = gson.fromJson(result, AuthResponse.class);
@@ -166,9 +165,9 @@ public class LoginActivity extends Activity {
 						editor.putString(Constants.PREF_USERNAME, "");
 						editor.putString(Constants.PREF_PASSWORD, "");
 						editor.commit();
-						Toast.makeText(mContext, R.string.invalid_credentials, Toast.LENGTH_LONG).show();
+						Toast.makeText(mContext, R.string.error_invalid_credentials, Toast.LENGTH_LONG).show();
 					} else if (fromJson.getStatus() == ResponseStatus.BAD_VERSION) {
-						Toast.makeText(mContext, R.string.invalid_version, Toast.LENGTH_LONG).show();
+						Toast.makeText(mContext, R.string.error_invalid_version, Toast.LENGTH_LONG).show();
 					} else {
 						editor.putString(Constants.PREF_SESSION, fromJson.getSessionId());
 						editor.commit();
@@ -179,7 +178,7 @@ public class LoginActivity extends Activity {
 					}
 				}
 			} catch (Exception e) {
-				Toast.makeText(mContext, R.string.terrible_error, Toast.LENGTH_LONG).show();
+				Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}

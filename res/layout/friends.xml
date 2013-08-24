@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@id/add_friend"
-                android:hint="@string/search"
+                android:hint="@string/menu_search"
                 android:inputType="text"/>
     </RelativeLayout>
 

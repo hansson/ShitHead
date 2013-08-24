@@ -72,7 +72,7 @@ public abstract class GCMActivity extends Activity {
 		Log.d("Notification", "Showing notification");
 		long[] pattern = { 100L, 100L, 100L, 100L, 500L };
 		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle(
-				getResources().getString(R.string.app_name)).setContentText(getResources().getString(R.string.new_move)).setAutoCancel(true).setVibrate(pattern);
+				getResources().getString(R.string.app_name)).setContentText(getResources().getString(R.string.game_new_move)).setAutoCancel(true).setVibrate(pattern);
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, MenuActivity.class);
 		// The stack builder object will contain an artificial back stack for the
@@ -93,9 +93,9 @@ public abstract class GCMActivity extends Activity {
 
 	protected abstract void handleGCMMessage(String message);
 
-	protected final BroadcastReceiver mHandleMessageReceiver = new ShitHeadLoginBroadcastReciever();
+	protected final BroadcastReceiver mHandleMessageReceiver = new ShitHeadLoginBroadcastReceiver();
 
-	private class ShitHeadLoginBroadcastReciever extends BroadcastReceiver {
+	private class ShitHeadLoginBroadcastReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
