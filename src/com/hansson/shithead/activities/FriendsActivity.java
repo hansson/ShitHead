@@ -85,15 +85,9 @@ public class FriendsActivity extends GCMActivity {
                         friendContainer.removeAllViews();
                         pendingFriendContainer.removeAllViews();
                         for (Friend friend : fromJson.getFriends()) {
-                            if (friend.isAccepted()) {
                                 RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.friend, null);
                                 populateFriendView(friend, inflate);
                                 friendContainer.addView(inflate);
-                            } else {
-                                RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.accept_friend, null);
-                                populateAcceptFriendView(friend, inflate);
-                                pendingFriendContainer.addView(inflate);
-                            }
                         }
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
                         Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();

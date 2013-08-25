@@ -71,7 +71,7 @@ public abstract class GCMActivity extends Activity {
 	private void createNotification() {
 		Log.d("Notification", "Showing notification");
 		long[] pattern = { 100L, 100L, 100L, 100L, 500L };
-		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_launcher).setContentTitle(
+		NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this).setSmallIcon(R.drawable.back_card).setContentTitle(
 				getResources().getString(R.string.app_name)).setContentText(getResources().getString(R.string.game_new_move)).setAutoCancel(true).setVibrate(pattern);
 		// Creates an explicit intent for an Activity in your app
 		Intent resultIntent = new Intent(this, MenuActivity.class);

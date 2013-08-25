@@ -20,7 +20,7 @@ public class StartGameActivity extends GCMActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.quick_game_type);
+        setContentView(R.layout.opponents);
         super.onCreate(savedInstanceState);
     }
 
@@ -47,7 +47,7 @@ public class StartGameActivity extends GCMActivity {
     public void friendsQuickGameListener(View v) {
         unregisterReceiver(mHandleMessageReceiver);
         mIsRegistered = false;
-        Intent prefIntent = new Intent(this, QuickGameFriendsActivity.class);
+        Intent prefIntent = new Intent(this, FriendsGameActivity.class);
         startActivityForResult(prefIntent, 0);
     }
 

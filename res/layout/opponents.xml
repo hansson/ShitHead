@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              android:paddingTop="@dimen/medium_margin">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_choose_opponents"
+            android:textSize="30sp"
+            android:layout_marginBottom="@dimen/medium_margin"/>
+
+    <Button
+            android:id="@+id/random"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="randomQuickGameListener"
+            android:text="@string/menu_random"
+            android:background="@drawable/std"
+            android:padding="@dimen/medium_margin"
+            android:textSize="@dimen/std_button_text"
+            android:layout_marginBottom="@dimen/medium_margin"
+            android:layout_marginLeft="@dimen/medium_margin"
+            android:layout_marginRight="@dimen/medium_margin"/>
+
+    <Button
+            android:id="@+id/friends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="friendsQuickGameListener"
+            android:text="@string/menu_invite_friends"
+            android:background="@drawable/std"
+            android:padding="@dimen/medium_margin"
+            android:textSize="@dimen/std_button_text"
+            android:layout_marginBottom="@dimen/medium_margin"
+            android:layout_marginLeft="@dimen/medium_margin"
+            android:layout_marginRight="@dimen/medium_margin"/>
+
+
+</LinearLayout>

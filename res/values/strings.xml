@@ -22,7 +22,7 @@
     <string name="login_auto_login">Auto login</string>
 
     <!-- MENU -->
-    <string name="menu_search">Friend username</string>
+    <string name="menu_search">Search</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_start_game">Start game</string>
     <string name="menu_logout">Logout</string>

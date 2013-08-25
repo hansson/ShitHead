@@ -17,6 +17,7 @@ import com.hansson.shithead.R;
 import com.hansson.shithead.entitys.Friend;
 import com.hansson.shithead.rr.BasicRequest;
 import com.hansson.shithead.rr.BasicResponse;
+import com.hansson.shithead.rr.FriendRequest;
 import com.hansson.shithead.rr.FriendResponse;
 import com.hansson.shithead.rr.InviteFriendRequest;
 import com.hansson.shithead.rr.ResponseStatus;
@@ -26,13 +27,13 @@ import com.hansson.shithead.util.GsonOperator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class QuickGameFriendsActivity extends GCMActivity {
+public class FriendsGameActivity extends GCMActivity {
 
     private List<String> mFriendList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.friends_quick_game);
+        setContentView(R.layout.friends_game);
         super.onCreate(savedInstanceState);
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
         new AT_ListFriends().execute();
@@ -44,8 +45,9 @@ public class QuickGameFriendsActivity extends GCMActivity {
     }
 
     public void startGameListener(View v) {
-        CheckBox privateGame = (CheckBox) findViewById(R.id.private_game);
-        new AT_InviteFriends().execute(mFriendList, privateGame.isChecked());
+//        CheckBox privateGame = (CheckBox) findViewById(R.id.private_game);
+        //TODO ask user if  private game
+        new AT_InviteFriends().execute(mFriendList, true);
         unregisterReceiver(mHandleMessageReceiver);
         mIsRegistered = false;
         setResult(Constants.INVITE_FRIEND_RETURN_OK);
@@ -76,11 +78,9 @@ public class QuickGameFriendsActivity extends GCMActivity {
                         LinearLayout friendContainer = (LinearLayout) findViewById(R.id.friend_container);
                         friendContainer.removeAllViews();
                         for (Friend friend : fromJson.getFriends()) {
-                            if (friend.isAccepted()) {
-                                RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.invite_friend, null);
+                                RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.friend, null);
                                 populateFriendView(friend, inflate);
                                 friendContainer.addView(inflate);
-                            }
                         }
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
                         Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
@@ -93,7 +93,7 @@ public class QuickGameFriendsActivity extends GCMActivity {
         }
 
         private void populateFriendView(Friend friend, RelativeLayout inflate) {
-            CheckBox checkFriend = (CheckBox) inflate.findViewById(R.id.choose_friend);
+            CheckBox checkFriend = (CheckBox) inflate.findViewById(R.id.check_friend);
             checkFriend.setOnCheckedChangeListener(new L_HandleCheckFriend(friend));
             TextView username = (TextView) inflate.findViewById(R.id.friend_name);
             username.setText(friend.getUsername());
@@ -134,6 +134,42 @@ public class QuickGameFriendsActivity extends GCMActivity {
 
     }
 
+    private class AT_RemoveFriend extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            FriendRequest request = new FriendRequest();
+            SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
+            request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
+            request.setFriendUsername(params[0]);
+            return GsonOperator.sendAndReceiveGson(request, "friends/remove");
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try {
+                findViewById(R.id.progress).setVisibility(View.GONE);
+                if (result.equals(Constants.CONNECTION_ERROR)) {
+                    Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
+                } else {
+                    Gson gson = new Gson();
+                    BasicResponse fromJson = gson.fromJson(result, BasicResponse.class);
+                    if (fromJson.getStatus() == ResponseStatus.OK) {
+                        Toast.makeText(mContext, R.string.error_friend_removed, Toast.LENGTH_LONG).show();
+                        new AT_ListFriends().execute();
+                    } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
+                        Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
+                    } else if (fromJson.getStatus() == ResponseStatus.NOT_OK) {
+                        Toast.makeText(mContext, R.string.error_invalid_friend, Toast.LENGTH_LONG).show();
+                    }
+                }
+            } catch (Exception e) {
+                Toast.makeText(mContext, R.string.error_terrible, Toast.LENGTH_LONG).show();
+                e.printStackTrace();
+            }
+        }
+    }
+
     private class L_HandleCheckFriend implements CompoundButton.OnCheckedChangeListener {
         private Friend mFriend;
         public L_HandleCheckFriend(Friend friend) {
@@ -147,6 +183,21 @@ public class QuickGameFriendsActivity extends GCMActivity {
             } else if(!b) {
                 mFriendList.remove(mFriend.getUsername());
             }
+        }
+    }
+
+    private class L_RemoveFriend implements View.OnClickListener {
+
+        private Friend mFriend;
+
+        public L_RemoveFriend(Friend friend) {
+            mFriend = friend;
+        }
+
+        @Override
+        public void onClick(View v) {
+            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+            new AT_RemoveFriend().execute(mFriend.getUsername());
         }
     }
 }
