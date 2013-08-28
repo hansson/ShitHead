@@ -39,12 +39,11 @@ import java.util.TimeZone;
 
 public class MenuActivity extends GCMActivity {
 
-    private Date mLastUpdate;
+    private Date mLastUpdate = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.menu);
-        mLastUpdate = new Date();
         super.onCreate(savedInstanceState);
     }
 
@@ -121,7 +120,7 @@ public class MenuActivity extends GCMActivity {
 
         @Override
         protected String doInBackground(Void... params) {
-            if (new Date().getTime() - mLastUpdate.getTime() < 10000) {
+            if (mLastUpdate != null && new Date().getTime() - mLastUpdate.getTime() < 10000) {
                 return "-";
             }
             mLastUpdate = new Date();
@@ -135,9 +134,9 @@ public class MenuActivity extends GCMActivity {
         protected void onPostExecute(String result) {
             try {
                 findViewById(R.id.progress).setVisibility(View.GONE);
-                if (result.equals(Constants.CONNECTION_ERROR) || result.equals("-")) {
+                if (result.equals(Constants.CONNECTION_ERROR)) {
                     Toast.makeText(mContext, R.string.error_connection, Toast.LENGTH_LONG).show();
-                } else {
+                } else if (!result.equals("-")){
                     Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").create();
                     ActiveGamesResponse fromJson = gson.fromJson(result, ActiveGamesResponse.class);
                     if (fromJson.getStatus() == ResponseStatus.OK) {

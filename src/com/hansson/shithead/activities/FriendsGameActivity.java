@@ -1,5 +1,6 @@
 package com.hansson.shithead.activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,7 +42,7 @@ public class FriendsGameActivity extends GCMActivity {
 
     @Override
     protected void handleGCMMessage(String message) {
-
+        //I do not want to handle anything here yet
     }
 
     public void startGameListener(View v) {
@@ -52,6 +53,13 @@ public class FriendsGameActivity extends GCMActivity {
         mIsRegistered = false;
         setResult(Constants.INVITE_FRIEND_RETURN_OK);
         finish();
+    }
+
+    public void searchFriendListener(View view) {
+        unregisterReceiver(mHandleMessageReceiver);
+        mIsRegistered = false;
+        Intent prefIntent = new Intent(this, FriendSearchActivity.class);
+        this.startActivity(prefIntent);
     }
 
     private class AT_ListFriends extends AsyncTask<Void, Void, String> {

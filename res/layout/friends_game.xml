@@ -17,7 +17,7 @@
             android:id="@+id/search_friends"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="startGameListener"
+            android:onClick="searchFriendListener"
             android:text="@string/menu_search"
             android:textSize="@dimen/std_button_text"
             android:background="@drawable/std"
