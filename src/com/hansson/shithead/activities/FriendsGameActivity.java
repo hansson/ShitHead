@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,12 +25,14 @@ import com.hansson.shithead.rr.FriendResponse;
 import com.hansson.shithead.rr.InviteFriendRequest;
 import com.hansson.shithead.rr.ResponseStatus;
 import com.hansson.shithead.util.Constants;
+import com.hansson.shithead.util.DialogActivity;
 import com.hansson.shithead.util.GsonOperator;
+import com.hansson.shithead.util.YesNoDialog;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class FriendsGameActivity extends GCMActivity {
+public class FriendsGameActivity extends GCMActivity implements DialogActivity {
 
     private List<String> mFriendList;
 
@@ -45,14 +49,25 @@ public class FriendsGameActivity extends GCMActivity {
         //I do not want to handle anything here yet
     }
 
-    public void startGameListener(View v) {
-//        CheckBox privateGame = (CheckBox) findViewById(R.id.private_game);
-        //TODO ask user if  private game
+    @Override
+    public void yes() {
+        Log.d("YES", "YES");
         new AT_InviteFriends().execute(mFriendList, true);
         unregisterReceiver(mHandleMessageReceiver);
         mIsRegistered = false;
         setResult(Constants.INVITE_FRIEND_RETURN_OK);
         finish();
+    }
+
+    @Override
+    public void no() {
+        Log.d("NO", "NO");
+    }
+
+    public void startGameListener(View v) {
+//        CheckBox privateGame = (CheckBox) findViewById(R.id.private_game);
+        //TODO ask user if  private game
+        new YesNoDialog(R.string.make_private, this).show(getSupportFragmentManager(), "public_game");
     }
 
     public void searchFriendListener(View view) {
@@ -61,6 +76,7 @@ public class FriendsGameActivity extends GCMActivity {
         Intent prefIntent = new Intent(this, FriendSearchActivity.class);
         this.startActivity(prefIntent);
     }
+
 
     private class AT_ListFriends extends AsyncTask<Void, Void, String> {
 
@@ -86,9 +102,9 @@ public class FriendsGameActivity extends GCMActivity {
                         LinearLayout friendContainer = (LinearLayout) findViewById(R.id.friend_container);
                         friendContainer.removeAllViews();
                         for (Friend friend : fromJson.getFriends()) {
-                                RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.friend, null);
-                                populateFriendView(friend, inflate);
-                                friendContainer.addView(inflate);
+                            RelativeLayout inflate = (RelativeLayout) getLayoutInflater().inflate(R.layout.friend, null);
+                            populateFriendView(friend, inflate);
+                            friendContainer.addView(inflate);
                         }
                     } else if (fromJson.getStatus() == ResponseStatus.INVALID_CREDENTIALS) {
                         Toast.makeText(mContext, R.string.error_invalid_session, Toast.LENGTH_LONG).show();
@@ -105,6 +121,8 @@ public class FriendsGameActivity extends GCMActivity {
             checkFriend.setOnCheckedChangeListener(new L_HandleCheckFriend(friend));
             TextView username = (TextView) inflate.findViewById(R.id.friend_name);
             username.setText(friend.getUsername());
+            ImageView remove = (ImageView) inflate.findViewById(R.id.remove_friend);
+            remove.setOnClickListener(new L_RemoveFriend(friend));
         }
     }
 
@@ -115,8 +133,8 @@ public class FriendsGameActivity extends GCMActivity {
             InviteFriendRequest request = new InviteFriendRequest();
             SharedPreferences settings = getSharedPreferences(Constants.PREF_TAG, 0);
             request.setSessionId(settings.getString(Constants.PREF_SESSION, ""));
-            request.setFriends((List<String>)params[0]);
-            request.setPrivateGame((Boolean)params[1]);
+            request.setFriends((List<String>) params[0]);
+            request.setPrivateGame((Boolean) params[1]);
             return GsonOperator.sendAndReceiveGson(request, "find/invite");
         }
 
@@ -180,15 +198,16 @@ public class FriendsGameActivity extends GCMActivity {
 
     private class L_HandleCheckFriend implements CompoundButton.OnCheckedChangeListener {
         private Friend mFriend;
+
         public L_HandleCheckFriend(Friend friend) {
             mFriend = friend;
         }
 
         @Override
         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-            if(b && mFriendList.size() < 3)  {
+            if (b && mFriendList.size() < 3) {
                 mFriendList.add(mFriend.getUsername());
-            } else if(!b) {
+            } else if (!b) {
                 mFriendList.remove(mFriend.getUsername());
             }
         }

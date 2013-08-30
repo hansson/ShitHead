@@ -5,7 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -20,8 +19,7 @@ public class FriendSearchActivity extends GCMActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.friends);
-        findViewById(R.id.add_friend).setOnClickListener(new L_AddFriend());
+        setContentView(R.layout.search_friends);
         super.onCreate(savedInstanceState);
     }
 
@@ -77,9 +75,8 @@ public class FriendSearchActivity extends GCMActivity {
 
         @Override
         public void onClick(View v) {
-            findViewById(R.id.progress).setVisibility(View.VISIBLE);
-            EditText addFriend = (EditText) findViewById(R.id.search_friend);
-            new AT_AddFriend().execute(addFriend.getText().toString());
+//            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+//            new AT_AddFriend().execute(addFriend.getText().toString());
         }
     }
 

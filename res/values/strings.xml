@@ -8,6 +8,8 @@
     <string name="accept">Accept</string>
     <string name="deny">Deny</string>
     <string name="add">Add</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- LOGIN -->
     <string name="login_login">Login</string>
@@ -73,5 +75,6 @@
     <string name="error_invalid_friend">Invalid friend username!</string>
     <string name="error_friend_removed">Friend successfully removed!</string>
     <string name="error_friend_already_added">Friend already added!</string>
+    <string name="make_private">You have choosen less than 3 friends. Do you want to make this a public game?</string>
 
 </resources>

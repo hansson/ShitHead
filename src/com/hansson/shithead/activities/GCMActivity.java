@@ -1,6 +1,5 @@
 package com.hansson.shithead.activities;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -9,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -20,7 +20,7 @@ import com.hansson.shithead.util.Constants;
 import static com.hansson.shithead.CommonUtilities.DISPLAY_MESSAGE_ACTION;
 import static com.hansson.shithead.CommonUtilities.EXTRA_MESSAGE;
 
-public abstract class GCMActivity extends Activity {
+public abstract class GCMActivity extends FragmentActivity {
 
 	protected Context mContext;
 	protected boolean mIsRegistered = false;
